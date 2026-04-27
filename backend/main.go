@@ -4,9 +4,12 @@ import (
 	"log/slog"
 	"net/http"
 	"os"
+
+	"github.com/P-SEN371-Group-3/educartion/config"
 )
 
 var logger *slog.Logger
+var cfg config.Config
 
 func handleRegister(w http.ResponseWriter, req *http.Request) {
 	logger.Info("Register Request Received", slog.String("remoteAddress", req.RemoteAddr))
@@ -16,6 +19,10 @@ func handleRegister(w http.ResponseWriter, req *http.Request) {
 
 	// TODO: rpc.WriteJSON(writer, status, response)
 
+}
+
+func init() {
+	cfg = config.LoadConfig()
 }
 
 func main() {
