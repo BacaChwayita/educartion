@@ -40,3 +40,21 @@ Example:
 powershell -ExecutionPolicy Bypass -File data\scripts\docker\run_app_schema.ps1
 powershell -ExecutionPolicy Bypass -File data\scripts\docker\run_app_test_schema.ps1
 ```
+
+### Execute all script
+
+>[!INFO] Note that user and password still postgres
+
+```powershell
+# Create DB + Schemas
+Get-Content .\scripts\database\001_create_database.sql | docker exec -i educartion-postgres psql -U postgres -d postgres
+Get-Content .\scripts\database\002_create_schemas.sql | docker exec -i educartion-postgres psql -U postgres -d postgres
+
+# Create Tables
+Get-Content .\scripts\schema\001_create_tables_app.sql | docker exec -i educartion-postgres psql -U postgres -d postgres
+Get-Content .\scripts\schema\002_create_tables_app_test.sql | docker exec -i educartion-postgres psql -U postgres -d postgres
+
+# Check tables created
+docker exec -it educartion-postgres psql -U postgres -d postgres -c "\dt app.*"
+docker exec -it educartion-postgres psql -U postgres -d postgres -c "\dt app_test.*"
+```
