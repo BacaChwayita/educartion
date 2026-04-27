@@ -1,0 +1,115 @@
+erDiagram
+	direction LR
+
+	ACCOUNT ||--o{ CART : owns
+	ACCOUNT ||--o{ "ORDER" : places
+	SUPPLIER ||--o{ PRODUCT : supplies
+	PRODUCT ||--o{ PRODUCT_IMAGE : has
+	CART ||--o{ CART_ITEM : contains
+	PRODUCT ||--o{ CART_ITEM : appears_in
+	"ORDER" ||--|{ ORDER_ITEM : contains
+	PRODUCT ||--o{ ORDER_ITEM : appears_in
+	"ORDER" ||--o| PAYMENT : has
+	"ORDER" ||--o| SHIPMENT : has_shipment
+
+	ACCOUNT {
+		int account_id PK
+		string full_name
+		string email UK
+		string password_hash
+		string password_salt
+		string role
+		datetime created_at
+	}
+
+	SUPPLIER {
+		int supplier_id PK
+		string name
+		string contact_email
+		string contact_phone
+	}
+
+	PRODUCT {
+		int product_id PK
+		int supplier_id FK
+		string name
+		string description
+		decimal price
+		decimal discount_percent
+		int stock_quantity
+		boolean is_active
+	}
+
+	PRODUCT_IMAGE {
+		int product_image_id PK
+		int product_id FK
+		string image_url
+		string alt_text
+		boolean is_primary
+		int sort_order
+		datetime created_at
+	}
+
+	CART {
+		int cart_id PK
+		int account_id FK
+		string session_key UK
+		datetime created_at
+		datetime updated_at
+	}
+
+	CART_ITEM {
+		int cart_id PK, FK
+		int product_id PK, FK
+		int quantity
+		decimal unit_price
+	}
+
+	"ORDER" {
+		int order_id PK
+		int account_id FK
+		string order_number UK
+		string status
+		decimal subtotal_amount
+		decimal discount_amount
+		decimal total_amount
+		datetime placed_at
+	}
+
+	ORDER_ITEM {
+		int order_id PK, FK
+		int product_id PK, FK
+		int quantity
+		decimal unit_price
+		decimal discount_amount
+	}
+
+	PAYMENT {
+		int payment_id PK
+		int order_id FK
+		string payment_method
+		string payment_status
+		string transaction_ref UK
+		decimal amount
+		datetime paid_at
+	}
+
+	SHIPMENT {
+		int shipment_id PK
+		int order_id FK
+		string courier_name
+		string courier_type
+		string delivery_reference UK
+		string delivery_address_line1
+		string delivery_address_line2
+		string delivery_city
+		string delivery_state
+		string delivery_postal_code
+		string delivery_country
+		string recipient_name
+		string recipient_phone
+		string shipment_status
+		datetime dispatched_at
+		datetime delivered_at
+		datetime created_at
+	}
