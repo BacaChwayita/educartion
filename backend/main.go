@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
-	"os"
 
 	"github.com/P-SEN371-Group-3/educartion/config"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -14,11 +13,10 @@ import (
 
 var pool *pgxpool.Pool
 var ctx = context.Background()
-var logger *slog.Logger
 var cfg config.Config
 
 func handleRegister(w http.ResponseWriter, req *http.Request) {
-	logger.Info("Register Request Received", slog.String("remoteAddress", req.RemoteAddr))
+	cfg.Logs.Logger.Info("Register Request Received", slog.String("remoteAddress", req.RemoteAddr))
 
 	// TODO: Do calls to fulfill Registration
 	//       Possibly auth package that returns (status, response)
@@ -59,25 +57,28 @@ func init() {
 
 func main() {
 
-	// TODO: Add config for logging
-
-	logger = slog.New(slog.NewJSONHandler(os.Stdout, nil)) // TODO: Chance nil to handler options - config
-
-	logger.Info("Service Ready")
+	cfg.Logs.Logger.Info("Service Ready")
 
 	// Auth
 	http.Handle("/api/auth/register", http.HandlerFunc(handleRegister))
+	// TODO: rest of Auth
 
 	// Catalog
+	// TODO: rest of Catalog
 
 	// Cart
+	// TODO: rest of Cart
 
 	// Orders
+	// TODO: rest of Orders
 
 	// Payments
+	// TODO: rest of Payments
 
 	// Admin
+	// TODO: rest of Admin
 
-	http.ListenAndServe(":8080", nil) // TODO: Add port to config
+	portString := fmt.Sprintf(":%s", cfg.Port)
+	http.ListenAndServe(portString, nil)
 
 }
