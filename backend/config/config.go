@@ -1,7 +1,6 @@
 package config
 
 import (
-	"github.com/joho/godotenv"
 	"log/slog"
 	"os"
 )
@@ -26,7 +25,6 @@ type PostgresConfig struct {
 }
 
 func LoadConfig() Config {
-	_ = godotenv.Load(".env")
 
 	config := Config{
 		Port: os.Getenv("PORT"),

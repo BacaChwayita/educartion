@@ -1,13 +1,19 @@
 package main
 
 import (
+	"context"
+	"fmt"
 	"log/slog"
 	"net/http"
 	"os"
 
 	"github.com/P-SEN371-Group-3/educartion/config"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/joho/godotenv"
 )
 
+var pool *pgxpool.Pool
+var ctx = context.Background()
 var logger *slog.Logger
 var cfg config.Config
 
@@ -22,7 +28,33 @@ func handleRegister(w http.ResponseWriter, req *http.Request) {
 }
 
 func init() {
+	_ = godotenv.Load()
 	cfg = config.LoadConfig()
+
+	connectionString := fmt.Sprintf(
+		"postgresql://%s:%s@%s:%s/%s",
+		cfg.DB.Username,
+		cfg.DB.Password,
+		cfg.DB.Host,
+		cfg.DB.Port,
+		cfg.DB.Database,
+	)
+
+	pool, err := pgxpool.New(ctx, connectionString)
+	if err != nil {
+		cfg.Logs.Logger.Error("Unable to connect to database", slog.String("error", err.Error()))
+		panic("Unable to connect to database: " + err.Error())
+	}
+
+	//
+	// verify the connection
+	//
+	if err := pool.Ping(ctx); err != nil {
+		cfg.Logs.Logger.Error("Unable to ping database:", slog.String("error", err.Error()))
+		panic("Unable to ping database:" + err.Error())
+	}
+
+	cfg.Logs.Logger.Info("Connected to PostgreSQL database!")
 }
 
 func main() {
