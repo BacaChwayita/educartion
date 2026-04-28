@@ -54,7 +54,7 @@ func TestInsertAccount(t *testing.T) {
 	newAccount := model.Account{
 		Account_id:    -1,
 		Full_name:     "Test Name",
-		Email:         "test@testmail.com",
+		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
 		Password_hash: "somehash",
 		Password_salt: "somesalt",
 		Role:          "customer",
