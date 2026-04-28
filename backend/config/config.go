@@ -1,14 +1,17 @@
 package config
 
 import (
+	"context"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"log/slog"
 	"os"
 )
 
 type Config struct {
-	Logs LogConfig
-	DB   PostgresConfig
-	Port string
+	Logs         LogConfig
+	DB           PostgresConfig
+	DBConnection DBConnection
+	Port         string
 }
 
 type LogConfig struct {
@@ -22,6 +25,11 @@ type PostgresConfig struct {
 	Host     string
 	Port     string
 	Database string
+}
+
+type DBConnection struct {
+	Pool *pgxpool.Pool
+	Ctx  context.Context
 }
 
 func LoadConfig() Config {
