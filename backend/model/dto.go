@@ -15,6 +15,7 @@ type Account struct {
 	Password_salt string    `json:"password_salt"`
 	Role          string    `json:"role"`
 	Created_at    time.Time `json:"created_at"`
+	//TODO: Add attempts + is_active
 }
 
 type Supplier struct {
