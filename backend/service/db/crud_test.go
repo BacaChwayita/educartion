@@ -21,7 +21,7 @@ func SetupTestDBConfigAndConnection() (*config.Config, error) {
 	var err error
 	var cfg config.Config
 
-	_ = godotenv.Load(".env.test")
+	_ = godotenv.Load("./../../.env.test")
 	cfg = config.LoadConfig()
 
 	cfg.DBConnection.Ctx = context.Background()
@@ -57,7 +57,7 @@ func TestInsertAccount(t *testing.T) {
 		Email:         "test@testmail.com",
 		Password_hash: "somehash",
 		Password_salt: "somesalt",
-		Role:          "USER",
+		Role:          "customer",
 		Created_at:    time.Now(),
 	}
 

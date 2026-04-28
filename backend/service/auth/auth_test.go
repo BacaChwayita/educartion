@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/P-SEN371-Group-3/educartion/model"
+	"github.com/P-SEN371-Group-3/educartion/service/auth"
 )
 
 func TestRegister(t *testing.T) {
@@ -13,7 +14,7 @@ func TestRegister(t *testing.T) {
 		Password_text: "MyPassword123!",
 	}
 
-	err := Register(user)
+	err := auth.Register(user)
 
 	if err != nil {
 		t.Errorf("Expected nil, got %s", err.Error())
