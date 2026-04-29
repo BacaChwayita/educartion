@@ -66,17 +66,25 @@ func TestRegister(t *testing.T) {
 	}
 }
 
-func TestLogin(t *testing.T) {
-	user := model.LoginRequest{
+func TestLoginWithEmail(t *testing.T) {
+	user := model.LoginWithEmailRequest{
 		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
 		Password_text: "MyPassword123!",
 	}
 
 	cfg, err := SetupTestDBConfigAndConnection()
 
-	err = auth.Login(cfg, user)
+	jwt, acc, err := auth.LoginWithEmail(cfg, user)
 
 	if err != nil {
 		t.Errorf("Expected nil, got %s", err.Error())
+	}
+
+	if jwt == "" {
+		t.Errorf("Expected JWT Token, got blank value")
+	}
+
+	if acc.Account_id <= 0 {
+		t.Errorf("Expected valid account_id, got %d", acc.Account_id)
 	}
 }
