@@ -8,14 +8,21 @@ import "time"
 //       where 10.50 will be stored as 1050
 
 type Account struct {
-	Account_id    int       `json:"account_id"`
-	Full_name     string    `json:"full_name"`
-	Email         string    `json:"email"`
-	Password_hash string    `json:"password_hash"`
-	Password_salt string    `json:"password_salt"`
-	Role          string    `json:"role"`
-	Created_at    time.Time `json:"created_at"`
-	//TODO: Add attempts + is_active
+	Account_id     int       `json:"account_id"`
+	Full_name      string    `json:"full_name"`
+	Email          string    `json:"email"`
+	Password_hash  string    `json:"password_hash"`
+	Password_salt  string    `json:"password_salt"`
+	Role           string    `json:"role"`
+	Login_attempts int       `json:"login_attempts"`
+	Is_active      bool      `json:"is_active"`
+	Created_at     time.Time `json:"created_at"`
+}
+
+type AccountLogins struct {
+	Token_id     int    `json:"token_id"`
+	Account_id   int    `json:"account_id"`
+	Token_string string `json:"token_string"`
 }
 
 type Supplier struct {

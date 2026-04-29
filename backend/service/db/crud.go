@@ -17,9 +17,11 @@ func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error)
 		password_hash,
 		password_salt,
 		role,
+		login_attempts,
+		is_active,
 		created_at
 	)
-	VALUES ($1, $2, $3, $4, $5, $6)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	RETURNING account_id
 	`
 
@@ -31,6 +33,8 @@ func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error)
 		acc.Password_hash,
 		acc.Password_salt,
 		acc.Role,
+		0,
+		true,
 		acc.Created_at,
 	).Scan(&acc.Account_id)
 	if err != nil {
