@@ -65,3 +65,18 @@ func TestRegister(t *testing.T) {
 		t.Errorf("Expected nil, got %s", err.Error())
 	}
 }
+
+func TestLogin(t *testing.T) {
+	user := model.LoginRequest{
+		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
+		Password_text: "MyPassword123!",
+	}
+
+	cfg, err := SetupTestDBConfigAndConnection()
+
+	err = auth.Login(cfg, user)
+
+	if err != nil {
+		t.Errorf("Expected nil, got %s", err.Error())
+	}
+}
