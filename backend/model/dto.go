@@ -19,10 +19,11 @@ type Account struct {
 	Created_at     time.Time `json:"created_at"`
 }
 
-type AccountLogins struct {
-	Token_id     int    `json:"token_id"`
-	Account_id   int    `json:"account_id"`
-	Token_string string `json:"token_string"`
+type AccountLogin struct {
+	Token_id     int       `json:"token_id"`
+	Account_id   int       `json:"account_id"`
+	Token_string string    `json:"token_string"`
+	Created_at   time.Time `json:"created_at"`
 }
 
 type Supplier struct {
