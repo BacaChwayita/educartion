@@ -111,7 +111,7 @@ func GetUserByEmail(cfg *config.Config, email string) (model.Account, error) {
 		role,
 		login_attempts,
 		is_active,
-		created_at,
+		created_at
 	FROM ACCOUNT
 	WHERE email = $1
 	`
@@ -194,7 +194,7 @@ func InsertAccountLogin(cfg *config.Config, al model.AccountLogin) (model.Accoun
 	sql := `
 	INSERT INTO ACCOUNTLOGIN (
 		account_id,
-		token_string,
+		token_string
 	)
 	VALUES ($1, $2)
 	RETURNING token_id
