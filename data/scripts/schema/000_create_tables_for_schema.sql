@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS :"schema_name".account (
 	token_string TEXT NOT NULL UNIQUE,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     CONSTRAINT accountlogins_account_fk FOREIGN KEY (account_id) REFERENCES :"schema_name".account (account_id) ON DELETE CASCADE
-}
+);
 
 
 CREATE TABLE IF NOT EXISTS :"schema_name".supplier (
