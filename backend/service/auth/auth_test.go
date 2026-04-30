@@ -67,12 +67,23 @@ func TestRegister(t *testing.T) {
 }
 
 func TestLoginWithEmail(t *testing.T) {
+	testEmail := fmt.Sprintf("%s@testmail.com", time.Now())
+	testPassword := fmt.Sprintf("%s@testmail.com", time.Now())
+
 	user := model.LoginWithEmailRequest{
-		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
-		Password_text: "MyPassword123!",
+		Email:         testEmail,
+		Password_text: testPassword,
+	}
+
+	registerTestUser := model.RegisterRequest{
+		Full_name:     "Test Name",
+		Email:         testEmail,
+		Password_text: testPassword,
 	}
 
 	cfg, err := SetupTestDBConfigAndConnection()
+
+	auth.Register(cfg, registerTestUser)
 
 	jwt, acc, err := auth.LoginWithEmail(cfg, user)
 
