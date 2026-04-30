@@ -7,7 +7,39 @@ import (
 
 	"github.com/P-SEN371-Group-3/educartion/config"
 	"github.com/P-SEN371-Group-3/educartion/model"
+	"github.com/jackc/pgx/v5"
 )
+
+const accountColumns = `
+	account_id,
+	full_name,
+	email,
+	password_hash,
+	password_salt,
+	role,
+	login_attempts,
+	is_active,
+	created_at
+`
+
+func scanAccount(row pgx.Row) (model.Account, error) {
+	var acc model.Account
+
+	err := row.Scan(
+		&acc.Account_id,
+		&acc.Full_name,
+		&acc.Email,
+		&acc.Password_hash,
+		&acc.Password_salt,
+		&acc.Role,
+		&acc.Login_attempts,
+		&acc.Is_active,
+		&acc.Created_at,
+	)
+
+	return acc, err
+
+}
 
 func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error) {
 	sql := `
@@ -101,38 +133,22 @@ func GetAccountWithJTI(cfg *config.Config, token_string string) (model.Account, 
 
 func GetUserByEmail(cfg *config.Config, email string) (model.Account, error) {
 	// TODO: Probably need a getAccount() that will do all getting, and we just pass the values that needs to be filtered on, to ensure we don't copy paste this same select with a slightly different where clause (imagine adding a column to the table, have to add all over...)
-	sql := `
-	SELECT 
-		account_id,
-		full_name,
-		email,
-		password_hash,
-		password_salt,
-		role,
-		login_attempts,
-		is_active,
-		created_at
-	FROM ACCOUNT
-	WHERE email = $1
-	`
+	sql := `SELECT ` + accountColumns +
+		`
+			FROM ACCOUNT
+			WHERE email = $1
+		`
 
 	var acc model.Account
 
-	err := cfg.DBConnection.Pool.QueryRow(
+	row := cfg.DBConnection.Pool.QueryRow(
 		cfg.DBConnection.Ctx,
 		sql,
 		email,
-	).Scan(
-		&acc.Account_id,
-		&acc.Full_name,
-		&acc.Email,
-		&acc.Password_hash,
-		&acc.Password_salt,
-		&acc.Role,
-		&acc.Login_attempts,
-		&acc.Is_active,
-		&acc.Created_at,
 	)
+
+	acc, err := scanAccount(row)
+
 	if err != nil {
 		cfg.Logs.Logger.Info(
 			"Error on db select",
@@ -158,22 +174,11 @@ func IncLoginAttempts(cfg *config.Config, account_id int) error {
 	WHERE account_id = $1
 	`
 
-	var acc model.Account
-
-	err := cfg.DBConnection.Pool.QueryRow(
+	// TODO: Look into the command tag returned...
+	_, err := cfg.DBConnection.Pool.Exec(
 		cfg.DBConnection.Ctx,
 		sql,
 		account_id,
-	).Scan(
-		&acc.Account_id,
-		&acc.Full_name,
-		&acc.Email,
-		&acc.Password_hash,
-		&acc.Password_salt,
-		&acc.Role,
-		&acc.Login_attempts,
-		&acc.Is_active,
-		&acc.Created_at,
 	)
 	if err != nil {
 		cfg.Logs.Logger.Info(
