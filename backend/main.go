@@ -23,6 +23,15 @@ func handleRegister(w http.ResponseWriter, req *http.Request) {
 
 }
 
+func handleProducts(w http.ResponseWriter, req *http.Request) {
+	cfg.Logs.Logger.Info("Products Request Received", slog.String("remoteAddress", req.RemoteAddr))
+
+	// TODO: Products processing
+
+	// TODO: rpc.WriteJSON(writer, status, response)
+
+}
+
 func init() {
 	var err error
 
@@ -66,6 +75,7 @@ func main() {
 	// TODO: rest of Auth
 
 	// Catalog
+	http.Handle("/api/products", http.HandlerFunc(handleProducts))
 	// TODO: rest of Catalog
 
 	// Cart
