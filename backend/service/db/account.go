@@ -83,7 +83,107 @@ func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error)
 	return acc, nil
 }
 
-func GetAccountWithJTI(cfg *config.Config, token_string string) (model.Account, error) {
+func GetAccountById(cfg *config.Config, account_id int) (model.Account, error) {
+	sql := `SELECT ` + accountColumns +
+		`
+			FROM ACCOUNT
+			WHERE account_id = $1
+		`
+
+	var acc model.Account
+
+	row := cfg.DBConnection.Pool.QueryRow(
+		cfg.DBConnection.Ctx,
+		sql,
+		account_id,
+	)
+
+	acc, err := scanAccount(row)
+
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db select",
+			slog.String("error", err.Error()),
+			slog.String("func", "GetAccountById"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("account_id", account_id),
+		)
+		return model.Account{}, fmt.Errorf("Error on db select: %w", err)
+	}
+
+	return acc, nil
+}
+
+func UpdateAccount(cfg *config.Config, acc model.Account) (int64, error) {
+	sql := `
+	UPDATE ACCOUNT
+	Set full_name = $2,
+		email = $3,
+		password_hash = $4,
+		password_salt = $5,
+		role = $6,
+		login_attempts = $7,
+		is_active = $8,
+		created_at = $9
+
+	WHERE account_id = $1
+	`
+
+	// TODO: Look into the command tag returned...
+	result, err := cfg.DBConnection.Pool.Exec(
+		cfg.DBConnection.Ctx,
+		sql,
+		acc.Account_id,
+		acc.Full_name,
+		acc.Email,
+		acc.Password_hash,
+		acc.Password_salt,
+		acc.Role,
+		acc.Login_attempts,
+		acc.Is_active,
+		acc.Created_at,
+	)
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db update",
+			slog.String("error", err.Error()),
+			slog.String("func", "UpdateAccount"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("account_id", acc.Account_id),
+		)
+		return -1, fmt.Errorf("Error on db update: %w", err)
+	}
+
+	return result.RowsAffected(), nil
+}
+
+func DeleteAccountById(cfg *config.Config, account_id int) (int64, error) {
+	sql := `
+	DELETE FROM ACCOUNT
+	WHERE account_id = $1
+	`
+
+	// TODO: Look into the command tag returned...
+	result, err := cfg.DBConnection.Pool.Exec(
+		cfg.DBConnection.Ctx,
+		sql,
+		account_id,
+	)
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db update",
+			slog.String("error", err.Error()),
+			slog.String("func", "DeleteAccountById"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("account_id", account_id),
+		)
+		return -1, fmt.Errorf("Error on db update: %w", err)
+	}
+
+	return result.RowsAffected(), nil
+}
+
+func GetAccountByJTI(cfg *config.Config, token_string string) (model.Account, error) {
 	sql := `
 	SELECT 
 		a.account_id,
@@ -131,7 +231,7 @@ func GetAccountWithJTI(cfg *config.Config, token_string string) (model.Account, 
 	return acc, nil
 }
 
-func GetUserByEmail(cfg *config.Config, email string) (model.Account, error) {
+func GetAccountByEmail(cfg *config.Config, email string) (model.Account, error) {
 	// TODO: Probably need a getAccount() that will do all getting, and we just pass the values that needs to be filtered on, to ensure we don't copy paste this same select with a slightly different where clause (imagine adding a column to the table, have to add all over...)
 	sql := `SELECT ` + accountColumns +
 		`
@@ -153,7 +253,7 @@ func GetUserByEmail(cfg *config.Config, email string) (model.Account, error) {
 		cfg.Logs.Logger.Info(
 			"Error on db select",
 			slog.String("error", err.Error()),
-			slog.String("func", "getUserByEmail"),
+			slog.String("func", "GetUserByEmail"),
 			slog.String("timestamp", time.Now().GoString()),
 			slog.String("email", email),
 		)
@@ -163,7 +263,7 @@ func GetUserByEmail(cfg *config.Config, email string) (model.Account, error) {
 	return acc, nil
 }
 
-func IncLoginAttempts(cfg *config.Config, account_id int) error {
+func IncLoginAttempts(cfg *config.Config, account_id int) (int64, error) {
 	// Doing funny case statement since there's no easy select account values yet,
 	// doesn't make sense to add to parms (db should be source of truth),
 	// and I don't want to do 2 sql statements if we can do it in 1
@@ -175,7 +275,7 @@ func IncLoginAttempts(cfg *config.Config, account_id int) error {
 	`
 
 	// TODO: Look into the command tag returned...
-	_, err := cfg.DBConnection.Pool.Exec(
+	result, err := cfg.DBConnection.Pool.Exec(
 		cfg.DBConnection.Ctx,
 		sql,
 		account_id,
@@ -188,10 +288,10 @@ func IncLoginAttempts(cfg *config.Config, account_id int) error {
 			slog.String("timestamp", time.Now().GoString()),
 			slog.Int("account_id", account_id),
 		)
-		return fmt.Errorf("Error on db update: %w", err)
+		return -1, fmt.Errorf("Error on db update: %w", err)
 	}
 
-	return nil
+	return result.RowsAffected(), nil
 
 }
 

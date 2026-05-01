@@ -72,7 +72,7 @@ func getAccountIdFromJWT(cfg *config.Config, tokenString string) (model.Account,
 
 	claims, _ := token.Claims.(jwt.MapClaims)
 
-	acc, err := db.GetAccountWithJTI(cfg, claims["jti"].(string))
+	acc, err := db.GetAccountByJTI(cfg, claims["jti"].(string))
 	if err != nil {
 		return model.Account{}, err
 	}
@@ -122,7 +122,7 @@ func LoginWithEmail(cfg *config.Config, lr model.LoginWithEmailRequest) (string,
 	const max_login_attempts int = 3
 	var acc model.Account
 
-	acc, err := db.GetUserByEmail(cfg, lr.Email)
+	acc, err := db.GetAccountByEmail(cfg, lr.Email)
 	if err != nil {
 		return "", model.Account{}, errors.New("Failed to get user by email")
 	}
