@@ -12,16 +12,16 @@ import (
 
 // SetupTestDBConfigAndConnection
 // A Helper function to set up a db config and connection for tests
-// example call: `cfg, err := SetupTestDBConfigAndConnection()
-func SetupTestDBConfigAndConnection() (*config.Config, error) {
+// This is to replace the fact that the init() function in main.go does not run
+func SetupTestDBConfigAndConnection() error {
 	//
 	// Get DB Connection set up for testing
 	//
 	var err error
-	var cfg config.Config
+	var cfg *config.Config
 
 	_ = godotenv.Load("./../../.env.test")
-	cfg = config.LoadConfig()
+	cfg = config.GetConfig()
 
 	cfg.DBConnection.Ctx = context.Background()
 
@@ -36,15 +36,15 @@ func SetupTestDBConfigAndConnection() (*config.Config, error) {
 
 	cfg.DBConnection.Pool, err = pgxpool.New(cfg.DBConnection.Ctx, connectionString)
 	if err != nil {
-		return &cfg, errors.New("Unable to connect to database: " + err.Error())
+		return errors.New("Unable to connect to database: " + err.Error())
 	}
 
 	//
 	// verify the connection
 	//
 	if err = cfg.DBConnection.Pool.Ping(cfg.DBConnection.Ctx); err != nil {
-		return &cfg, errors.New("Unable to ping database:" + err.Error())
+		return errors.New("Unable to ping database:" + err.Error())
 	}
 
-	return &cfg, nil
+	return nil
 }

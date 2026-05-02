@@ -14,15 +14,18 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func SetupTestDBConfigAndConnection() (*config.Config, error) {
+// SetupTestDBConfigAndConnection
+// A Helper function to set up a db config and connection for tests
+// This is to replace the fact that the init() function in main.go does not run
+func SetupTestDBConfigAndConnection() error {
 	//
 	// Get DB Connection set up for testing
 	//
 	var err error
-	var cfg config.Config
+	var cfg *config.Config
 
 	_ = godotenv.Load("./../../.env.test")
-	cfg = config.LoadConfig()
+	cfg = config.GetConfig()
 
 	cfg.DBConnection.Ctx = context.Background()
 
@@ -37,17 +40,17 @@ func SetupTestDBConfigAndConnection() (*config.Config, error) {
 
 	cfg.DBConnection.Pool, err = pgxpool.New(cfg.DBConnection.Ctx, connectionString)
 	if err != nil {
-		return &cfg, errors.New("Unable to connect to database: " + err.Error())
+		return errors.New("Unable to connect to database: " + err.Error())
 	}
 
 	//
 	// verify the connection
 	//
 	if err = cfg.DBConnection.Pool.Ping(cfg.DBConnection.Ctx); err != nil {
-		return &cfg, errors.New("Unable to ping database:" + err.Error())
+		return errors.New("Unable to ping database:" + err.Error())
 	}
 
-	return &cfg, nil
+	return nil
 }
 
 func TestRegister(t *testing.T) {
@@ -57,9 +60,9 @@ func TestRegister(t *testing.T) {
 		Password_text: "MyPassword123!",
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 
-	err = auth.Register(cfg, user)
+	err = auth.Register(user)
 
 	if err != nil {
 		t.Errorf("Expected nil, got %s", err.Error())
@@ -81,11 +84,11 @@ func TestLoginWithEmail(t *testing.T) {
 		Password_text: testPassword,
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 
-	auth.Register(cfg, registerTestUser)
+	auth.Register(registerTestUser)
 
-	jwt, acc, err := auth.LoginWithEmail(cfg, user)
+	jwt, acc, err := auth.LoginWithEmail(user)
 
 	if err != nil {
 		t.Errorf("Expected nil, got %s", err.Error())

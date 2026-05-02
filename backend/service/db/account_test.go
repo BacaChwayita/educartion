@@ -20,12 +20,12 @@ func TestInsertAccount(t *testing.T) {
 		Created_at:    time.Now(),
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	acc, err := db.InsertAccount(cfg, newAccount)
+	acc, err := db.InsertAccount(newAccount)
 
 	if err != nil {
 		t.Errorf("Error not nil, got %s", err.Error())
@@ -46,17 +46,17 @@ func TestGetAccountById(t *testing.T) {
 		Created_at:    time.Now(),
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	newAcc, err := db.InsertAccount(cfg, insAcc)
+	newAcc, err := db.InsertAccount(insAcc)
 	if err != nil {
 		t.Fatalf("InsertAccount() call failed: %s", err.Error())
 	}
 
-	getAcc, err := db.GetAccountById(cfg, newAcc.Account_id)
+	getAcc, err := db.GetAccountById(newAcc.Account_id)
 
 	if err != nil {
 		t.Errorf("Error not nil, got %s", err.Error())
@@ -82,24 +82,24 @@ func TestUpdateAccount(t *testing.T) {
 		Created_at:    time.Now(),
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	newAcc, err := db.InsertAccount(cfg, insAcc)
+	newAcc, err := db.InsertAccount(insAcc)
 	if err != nil {
 		t.Fatalf("InsertAccount() call failed: %s", err.Error())
 	}
 
 	chgAcc := newAcc
 	chgAcc.Password_hash = "newhash"
-	rowCount, err := db.UpdateAccount(cfg, chgAcc)
+	rowCount, err := db.UpdateAccount(chgAcc)
 	if err != nil {
 		t.Errorf("Error not nil, got %s", err.Error())
 	}
 
-	updatedAcc, err := db.GetAccountById(cfg, chgAcc.Account_id)
+	updatedAcc, err := db.GetAccountById(chgAcc.Account_id)
 
 	if rowCount != 1 {
 		t.Errorf("Expected 1, got %d", rowCount)
@@ -120,17 +120,17 @@ func TestDeleteAccountById(t *testing.T) {
 		Created_at:    time.Now(),
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	newAcc, err := db.InsertAccount(cfg, insAcc)
+	newAcc, err := db.InsertAccount(insAcc)
 	if err != nil {
 		t.Fatalf("InsertAccount() call failed: %s", err.Error())
 	}
 
-	rowCount, err := db.DeleteAccountById(cfg, newAcc.Account_id)
+	rowCount, err := db.DeleteAccountById(newAcc.Account_id)
 	if err != nil {
 		t.Errorf("Error not nil, got %s", err.Error())
 	}
@@ -139,7 +139,7 @@ func TestDeleteAccountById(t *testing.T) {
 		t.Errorf("Expected 1, got %d", rowCount)
 	}
 
-	deletedAcc, err := db.GetAccountById(cfg, newAcc.Account_id)
+	deletedAcc, err := db.GetAccountById(newAcc.Account_id)
 	if err != pgx.ErrNoRows {
 		t.Errorf("Expected pgx.ErrNoRows error to be returned, Got: %s", err.Error())
 	}
@@ -163,17 +163,17 @@ func TestGetAccountByEmail(t *testing.T) {
 		Created_at:    time.Now(),
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	newAcc, err := db.InsertAccount(cfg, insAcc)
+	newAcc, err := db.InsertAccount(insAcc)
 	if err != nil {
 		t.Fatalf("InsertAccount() call failed: %s", err.Error())
 	}
 
-	getAcc, err := db.GetAccountByEmail(cfg, testEmail)
+	getAcc, err := db.GetAccountByEmail(testEmail)
 
 	if err != nil {
 		t.Errorf("GetAccountByEmail() call failed: %s", err.Error())
@@ -210,12 +210,12 @@ func TestIncLoginAttempts(t *testing.T) {
 		Created_at:     time.Now(),
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	newAcc, err := db.InsertAccount(cfg, insAcc)
+	newAcc, err := db.InsertAccount(insAcc)
 	if err != nil {
 		t.Fatalf("InsertAccount() call failed: %s", err.Error())
 	}
@@ -228,7 +228,7 @@ func TestIncLoginAttempts(t *testing.T) {
 	// + active Account
 	// ========================
 
-	rowCount, err = db.IncLoginAttempts(cfg, newAcc.Account_id)
+	rowCount, err = db.IncLoginAttempts(newAcc.Account_id)
 	if err != nil {
 		t.Errorf("IncLoginAttempts() call failed: %s", err.Error())
 	}
@@ -236,7 +236,7 @@ func TestIncLoginAttempts(t *testing.T) {
 		t.Errorf("Expected 1 row updated, got %d", rowCount)
 	}
 
-	AccIncOnce, err := db.GetAccountById(cfg, newAcc.Account_id)
+	AccIncOnce, err := db.GetAccountById(newAcc.Account_id)
 	if err != nil {
 		t.Errorf("GetAccountById() call failed: %s", err.Error())
 	}
@@ -258,7 +258,7 @@ func TestIncLoginAttempts(t *testing.T) {
 	// + active Account
 	// ========================
 
-	rowCount, err = db.IncLoginAttempts(cfg, newAcc.Account_id)
+	rowCount, err = db.IncLoginAttempts(newAcc.Account_id)
 	if err != nil {
 		t.Errorf("IncLoginAttempts() call failed: %s", err.Error())
 	}
@@ -266,7 +266,7 @@ func TestIncLoginAttempts(t *testing.T) {
 		t.Errorf("Expected 1 row updated, got %d", rowCount)
 	}
 
-	AccIncOnce, err = db.GetAccountById(cfg, newAcc.Account_id)
+	AccIncOnce, err = db.GetAccountById(newAcc.Account_id)
 	if err != nil {
 		t.Errorf("GetAccountById() call failed: %s", err.Error())
 	}
@@ -288,7 +288,7 @@ func TestIncLoginAttempts(t *testing.T) {
 	// + inactive Account
 	// ========================
 
-	rowCount, err = db.IncLoginAttempts(cfg, newAcc.Account_id)
+	rowCount, err = db.IncLoginAttempts(newAcc.Account_id)
 	if err != nil {
 		t.Errorf("IncLoginAttempts() call failed: %s", err.Error())
 	}
@@ -296,7 +296,7 @@ func TestIncLoginAttempts(t *testing.T) {
 		t.Errorf("Expected 1 row updated, got %d", rowCount)
 	}
 
-	AccIncOnce, err = db.GetAccountById(cfg, newAcc.Account_id)
+	AccIncOnce, err = db.GetAccountById(newAcc.Account_id)
 	if err != nil {
 		t.Errorf("GetAccountById() call failed: %s", err.Error())
 	}
@@ -323,12 +323,12 @@ func TestInsertAccountLogin(t *testing.T) {
 		Created_at:    time.Now(),
 	}
 
-	cfg, err := SetupTestDBConfigAndConnection()
+	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	acc, err := db.InsertAccount(cfg, newAccount)
+	acc, err := db.InsertAccount(newAccount)
 	if err != nil {
 		t.Fatalf("InsertAccount() call failed: %s", err.Error())
 	}
@@ -342,7 +342,7 @@ func TestInsertAccountLogin(t *testing.T) {
 		Created_at:   time.Now(),
 	}
 
-	accLogin, err := db.InsertAccountLogin(cfg, newAccountLogin)
+	accLogin, err := db.InsertAccountLogin(newAccountLogin)
 	if err != nil {
 		t.Errorf("InsertAccountLogin() call failed: %s", err.Error())
 	}

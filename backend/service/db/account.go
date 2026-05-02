@@ -39,7 +39,9 @@ func scanAccount(row pgx.Row) (model.Account, error) {
 
 }
 
-func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error) {
+func InsertAccount(acc model.Account) (model.Account, error) {
+	cfg := config.GetConfig()
+
 	sql := `
 	INSERT INTO ACCOUNT (
 		full_name,
@@ -84,7 +86,9 @@ func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error)
 	return acc, nil
 }
 
-func GetAccountById(cfg *config.Config, account_id int) (model.Account, error) {
+func GetAccountById(account_id int) (model.Account, error) {
+	cfg := config.GetConfig()
+
 	sql := `SELECT ` + accountColumns +
 		`
 			FROM ACCOUNT
@@ -119,7 +123,9 @@ func GetAccountById(cfg *config.Config, account_id int) (model.Account, error) {
 	return acc, nil
 }
 
-func UpdateAccount(cfg *config.Config, acc model.Account) (int64, error) {
+func UpdateAccount(acc model.Account) (int64, error) {
+	cfg := config.GetConfig()
+
 	sql := `
 	UPDATE ACCOUNT
 	Set full_name = $2,
@@ -159,7 +165,9 @@ func UpdateAccount(cfg *config.Config, acc model.Account) (int64, error) {
 	return result.RowsAffected(), nil
 }
 
-func DeleteAccountById(cfg *config.Config, account_id int) (int64, error) {
+func DeleteAccountById(account_id int) (int64, error) {
+	cfg := config.GetConfig()
+
 	sql := `
 	DELETE FROM ACCOUNT
 	WHERE account_id = $1
@@ -184,7 +192,9 @@ func DeleteAccountById(cfg *config.Config, account_id int) (int64, error) {
 	return result.RowsAffected(), nil
 }
 
-func GetAccountByJTI(cfg *config.Config, token_string string) (model.Account, error) {
+func GetAccountByJTI(token_string string) (model.Account, error) {
+	cfg := config.GetConfig()
+
 	sql := `
 	SELECT 
 		a.account_id,
@@ -235,7 +245,9 @@ func GetAccountByJTI(cfg *config.Config, token_string string) (model.Account, er
 	return acc, nil
 }
 
-func GetAccountByEmail(cfg *config.Config, email string) (model.Account, error) {
+func GetAccountByEmail(email string) (model.Account, error) {
+	cfg := config.GetConfig()
+
 	sql := `SELECT ` + accountColumns +
 		`
 			FROM ACCOUNT
@@ -270,7 +282,9 @@ func GetAccountByEmail(cfg *config.Config, email string) (model.Account, error) 
 	return acc, nil
 }
 
-func IncLoginAttempts(cfg *config.Config, account_id int) (int64, error) {
+func IncLoginAttempts(account_id int) (int64, error) {
+	cfg := config.GetConfig()
+
 	// Doing funny case statement since there's no easy select account values yet,
 	// doesn't make sense to add to parms (db should be source of truth),
 	// and I don't want to do 2 sql statements if we can do it in 1
@@ -301,7 +315,9 @@ func IncLoginAttempts(cfg *config.Config, account_id int) (int64, error) {
 
 }
 
-func InsertAccountLogin(cfg *config.Config, al model.AccountLogin) (model.AccountLogin, error) {
+func InsertAccountLogin(al model.AccountLogin) (model.AccountLogin, error) {
+	cfg := config.GetConfig()
+
 	sql := `
 	INSERT INTO ACCOUNTLOGIN (
 		account_id,

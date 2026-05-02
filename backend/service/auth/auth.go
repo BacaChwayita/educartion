@@ -4,7 +4,6 @@ import (
 	"errors"
 	"time"
 
-	"github.com/P-SEN371-Group-3/educartion/config"
 	"github.com/P-SEN371-Group-3/educartion/model"
 	"github.com/P-SEN371-Group-3/educartion/service/db"
 	"github.com/golang-jwt/jwt/v5"
@@ -60,8 +59,7 @@ func createJWT() (string, error) {
 	return tokenString, err
 }
 
-func getAccountIdFromJWT(cfg *config.Config, tokenString string) (model.Account, error) {
-
+func getAccountIdFromJWT(tokenString string) (model.Account, error) {
 	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		return getJWTKey(), nil
 	}, jwt.WithValidMethods([]string{jwt.SigningMethodHS256.Alg()}))
@@ -71,7 +69,7 @@ func getAccountIdFromJWT(cfg *config.Config, tokenString string) (model.Account,
 
 	claims, _ := token.Claims.(jwt.MapClaims)
 
-	acc, err := db.GetAccountByJTI(cfg, claims["jti"].(string))
+	acc, err := db.GetAccountByJTI(claims["jti"].(string))
 	if err != nil {
 		return model.Account{}, err
 	}
@@ -84,11 +82,9 @@ func getAccountIdFromJWT(cfg *config.Config, tokenString string) (model.Account,
 // Adds a user to the Account table in the db.
 // Will hash the password and store the hashed value
 //
-// @param cfg config of the application, used for db connection
 // @param rr RegisterRequest struct - request of the endpoint
 // @return error any errors
-func Register(cfg *config.Config, rr model.RegisterRequest) error {
-
+func Register(rr model.RegisterRequest) error {
 	hashedPassword, err := hashPassword(rr.Password_text)
 	if err != nil {
 		return errors.New("Failed to hash password: " + err.Error())
@@ -102,7 +98,7 @@ func Register(cfg *config.Config, rr model.RegisterRequest) error {
 		Created_at:    time.Now(),
 	}
 
-	_, err = db.InsertAccount(cfg, newAccount)
+	_, err = db.InsertAccount(newAccount)
 	if err != nil {
 		return errors.New("Failed to Insert Account: " + err.Error())
 	}
@@ -115,11 +111,11 @@ func Register(cfg *config.Config, rr model.RegisterRequest) error {
 // If successful, a JWT token will be returned, as well as the user profile.
 // If unsuccessful, the login_attempts is incremented.
 // Once login_attemts reach it's max value, all login_attempts will fail.
-func LoginWithEmail(cfg *config.Config, lr model.LoginWithEmailRequest) (string, model.Account, error) {
+func LoginWithEmail(lr model.LoginWithEmailRequest) (string, model.Account, error) {
 	const max_login_attempts int = 3
 	var acc model.Account
 
-	acc, err := db.GetAccountByEmail(cfg, lr.Email)
+	acc, err := db.GetAccountByEmail(lr.Email)
 	if err != nil {
 		return "", model.Account{}, errors.New("Failed to get user by email")
 	}
@@ -131,7 +127,7 @@ func LoginWithEmail(cfg *config.Config, lr model.LoginWithEmailRequest) (string,
 
 	ok := checkPassword(lr.Password_text, acc.Password_hash)
 	if !ok {
-		db.IncLoginAttempts(cfg, acc.Account_id)
+		db.IncLoginAttempts(acc.Account_id)
 		return "", model.Account{}, errors.New("Password incorrect")
 	}
 
@@ -142,7 +138,7 @@ func LoginWithEmail(cfg *config.Config, lr model.LoginWithEmailRequest) (string,
 			Token_string: tokenString,
 			Account_id:   acc.Account_id,
 		}
-		accLogin, err := db.InsertAccountLogin(cfg, accLogin)
+		accLogin, err := db.InsertAccountLogin(accLogin)
 		if err != nil {
 			return "", acc, nil // Failed to make a JWT, but still managed to login. User can continue.
 		}

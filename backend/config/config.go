@@ -2,24 +2,26 @@ package config
 
 import (
 	"context"
-	"github.com/jackc/pgx/v5/pgxpool"
 	"log/slog"
 	"os"
+	"sync"
+
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type Config struct {
-	Logs         LogConfig
-	DB           PostgresConfig
-	DBConnection DBConnection
+	Logs         logConfig
+	DB           postgresConfig
+	DBConnection dbConnection
 	Port         string
 }
 
-type LogConfig struct {
+type logConfig struct {
 	Logger *slog.Logger
 	Level  string
 }
 
-type PostgresConfig struct {
+type postgresConfig struct {
 	Username string
 	Password string
 	Host     string
@@ -27,20 +29,35 @@ type PostgresConfig struct {
 	Database string
 }
 
-type DBConnection struct {
+type dbConnection struct {
 	Pool *pgxpool.Pool
 	Ctx  context.Context
 }
 
-func LoadConfig() Config {
+var lock = &sync.Mutex{}
+var configInstance *Config
+
+func GetConfig() *Config {
+	if configInstance == nil {
+		lock.Lock()
+		defer lock.Unlock()
+		if configInstance == nil { // Ensure goroutines does not get past previous if while main one is busy locking
+			configInstance = loadConfig()
+		}
+	}
+
+	return configInstance
+}
+
+func loadConfig() *Config {
 
 	config := Config{
 		Port: os.Getenv("PORT"),
-		Logs: LogConfig{
+		Logs: logConfig{
 			Logger: nil,
 			Level:  os.Getenv("LOG_LEVEL"),
 		},
-		DB: PostgresConfig{
+		DB: postgresConfig{
 			Username: os.Getenv("POSTGRES_USER"),
 			Password: os.Getenv("POSTGRES_PWD"),
 			Host:     os.Getenv("POSTGRES_HOST"),
@@ -76,6 +93,6 @@ func LoadConfig() Config {
 
 	config.Logs.Logger = getLogger(os.Getenv("LOG_TYPE"))
 
-	return config
+	return &config
 
 }

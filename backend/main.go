@@ -11,7 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var cfg config.Config
+var cfg *config.Config
 
 func handleRegister(w http.ResponseWriter, req *http.Request) {
 	cfg.Logs.Logger.Info("Register Request Received", slog.String("remoteAddress", req.RemoteAddr))
@@ -27,7 +27,7 @@ func init() {
 	var err error
 
 	_ = godotenv.Load()
-	cfg = config.LoadConfig()
+	cfg = config.GetConfig()
 
 	cfg.DBConnection.Ctx = context.Background()
 
