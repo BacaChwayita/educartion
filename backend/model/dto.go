@@ -12,7 +12,6 @@ type Account struct {
 	Full_name      string    `json:"full_name"`
 	Email          string    `json:"email"`
 	Password_hash  string    `json:"password_hash"`
-	Password_salt  string    `json:"password_salt"`
 	Role           string    `json:"role"`
 	Login_attempts int       `json:"login_attempts"`
 	Is_active      bool      `json:"is_active"`

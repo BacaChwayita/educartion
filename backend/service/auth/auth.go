@@ -2,7 +2,6 @@ package auth
 
 import (
 	"errors"
-	"fmt"
 	"time"
 
 	"github.com/P-SEN371-Group-3/educartion/config"
@@ -99,11 +98,9 @@ func Register(cfg *config.Config, rr model.RegisterRequest) error {
 		Full_name:     rr.Full_name,
 		Email:         rr.Email,
 		Password_hash: hashedPassword,
-		Password_salt: "", // TODO: Remove Password_salt, since bcrypt does salting itself
 		Role:          "customer",
 		Created_at:    time.Now(),
 	}
-	fmt.Printf("hashed %s to %s:", rr.Password_text, hashedPassword) // TODO: Remove
 
 	_, err = db.InsertAccount(cfg, newAccount)
 	if err != nil {

@@ -6,7 +6,6 @@ CREATE TABLE IF NOT EXISTS :"schema_name".account (
     full_name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password_hash TEXT NOT NULL,
-    password_salt TEXT NOT NULL,
     role TEXT NOT NULL,
     login_attempts INTEGER NOT NULL DEFAULT 0,
     is_active BOOLEAN NOT NULL DEFAULT TRUE,

@@ -16,7 +16,6 @@ func TestInsertAccount(t *testing.T) {
 		Full_name:     "Test Name",
 		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
 		Password_hash: "somehash",
-		Password_salt: "somesalt",
 		Role:          "customer",
 		Created_at:    time.Now(),
 	}
@@ -43,7 +42,6 @@ func TestGetAccountById(t *testing.T) {
 		Full_name:     "Test Name",
 		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
 		Password_hash: "somehash",
-		Password_salt: "somesalt",
 		Role:          "customer",
 		Created_at:    time.Now(),
 	}
@@ -80,7 +78,6 @@ func TestUpdateAccount(t *testing.T) {
 		Full_name:     "Test Name",
 		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
 		Password_hash: "somehash",
-		Password_salt: "somesalt",
 		Role:          "customer",
 		Created_at:    time.Now(),
 	}
@@ -119,7 +116,6 @@ func TestDeleteAccountById(t *testing.T) {
 		Full_name:     "Test Name",
 		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
 		Password_hash: "somehash",
-		Password_salt: "somesalt",
 		Role:          "customer",
 		Created_at:    time.Now(),
 	}
@@ -163,7 +159,6 @@ func TestGetAccountByEmail(t *testing.T) {
 		Full_name:     "Test Name",
 		Email:         testEmail,
 		Password_hash: "somehash",
-		Password_salt: "somesalt",
 		Role:          "customer",
 		Created_at:    time.Now(),
 	}
@@ -209,7 +204,6 @@ func TestIncLoginAttempts(t *testing.T) {
 		Full_name:      "Test Name",
 		Email:          fmt.Sprintf("%s@testmail.com", time.Now()),
 		Password_hash:  "somehash",
-		Password_salt:  "somesalt",
 		Role:           "customer",
 		Login_attempts: 0,
 		Is_active:      true,
@@ -325,7 +319,6 @@ func TestInsertAccountLogin(t *testing.T) {
 		Full_name:     "Test Name",
 		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
 		Password_hash: "somehash",
-		Password_salt: "somesalt",
 		Role:          "customer",
 		Created_at:    time.Now(),
 	}

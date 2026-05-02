@@ -15,7 +15,6 @@ const accountColumns = `
 	full_name,
 	email,
 	password_hash,
-	password_salt,
 	role,
 	login_attempts,
 	is_active,
@@ -30,7 +29,6 @@ func scanAccount(row pgx.Row) (model.Account, error) {
 		&acc.Full_name,
 		&acc.Email,
 		&acc.Password_hash,
-		&acc.Password_salt,
 		&acc.Role,
 		&acc.Login_attempts,
 		&acc.Is_active,
@@ -47,13 +45,12 @@ func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error)
 		full_name,
 		email,
 		password_hash,
-		password_salt,
 		role,
 		login_attempts,
 		is_active,
 		created_at
 	)
-	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+	VALUES ($1, $2, $3, $4, $5, $6, $7)
 	RETURNING account_id
 	`
 
@@ -63,7 +60,6 @@ func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error)
 		acc.Full_name,
 		acc.Email,
 		acc.Password_hash,
-		acc.Password_salt,
 		acc.Role,
 		0,
 		true,
@@ -129,16 +125,14 @@ func UpdateAccount(cfg *config.Config, acc model.Account) (int64, error) {
 	Set full_name = $2,
 		email = $3,
 		password_hash = $4,
-		password_salt = $5,
-		role = $6,
-		login_attempts = $7,
-		is_active = $8,
-		created_at = $9
+		role = $5,
+		login_attempts = $6,
+		is_active = $7,
+		created_at = $8
 
 	WHERE account_id = $1
 	`
 
-	// TODO: Look into the command tag returned...
 	result, err := cfg.DBConnection.Pool.Exec(
 		cfg.DBConnection.Ctx,
 		sql,
@@ -146,7 +140,6 @@ func UpdateAccount(cfg *config.Config, acc model.Account) (int64, error) {
 		acc.Full_name,
 		acc.Email,
 		acc.Password_hash,
-		acc.Password_salt,
 		acc.Role,
 		acc.Login_attempts,
 		acc.Is_active,
@@ -172,7 +165,6 @@ func DeleteAccountById(cfg *config.Config, account_id int) (int64, error) {
 	WHERE account_id = $1
 	`
 
-	// TODO: Look into the command tag returned...
 	result, err := cfg.DBConnection.Pool.Exec(
 		cfg.DBConnection.Ctx,
 		sql,
@@ -199,7 +191,6 @@ func GetAccountByJTI(cfg *config.Config, token_string string) (model.Account, er
 		a.full_name,
 		a.email,
 		a.password_hash,
-		a.password_salt,
 		a.role,
 		a.login_attempts,
 		a.is_active,
@@ -221,7 +212,6 @@ func GetAccountByJTI(cfg *config.Config, token_string string) (model.Account, er
 		&acc.Full_name,
 		&acc.Email,
 		&acc.Password_hash,
-		&acc.Password_salt,
 		&acc.Role,
 		&acc.Login_attempts,
 		&acc.Is_active,
@@ -246,7 +236,6 @@ func GetAccountByJTI(cfg *config.Config, token_string string) (model.Account, er
 }
 
 func GetAccountByEmail(cfg *config.Config, email string) (model.Account, error) {
-	// TODO: Probably need a getAccount() that will do all getting, and we just pass the values that needs to be filtered on, to ensure we don't copy paste this same select with a slightly different where clause (imagine adding a column to the table, have to add all over...)
 	sql := `SELECT ` + accountColumns +
 		`
 			FROM ACCOUNT
@@ -292,7 +281,6 @@ func IncLoginAttempts(cfg *config.Config, account_id int) (int64, error) {
 	WHERE account_id = $1
 	`
 
-	// TODO: Look into the command tag returned...
 	result, err := cfg.DBConnection.Pool.Exec(
 		cfg.DBConnection.Ctx,
 		sql,
