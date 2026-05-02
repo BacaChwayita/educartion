@@ -69,6 +69,11 @@ func InsertAccount(cfg *config.Config, acc model.Account) (model.Account, error)
 		true,
 		acc.Created_at,
 	).Scan(&acc.Account_id)
+
+	if err == pgx.ErrNoRows {
+		return model.Account{}, err
+	}
+
 	if err != nil {
 		cfg.Logs.Logger.Info(
 			"Error on db insert",
@@ -99,6 +104,10 @@ func GetAccountById(cfg *config.Config, account_id int) (model.Account, error) {
 	)
 
 	acc, err := scanAccount(row)
+
+	if err == pgx.ErrNoRows {
+		return model.Account{}, err
+	}
 
 	if err != nil {
 		cfg.Logs.Logger.Info(
@@ -218,6 +227,11 @@ func GetAccountByJTI(cfg *config.Config, token_string string) (model.Account, er
 		&acc.Is_active,
 		&acc.Created_at,
 	)
+
+	if err == pgx.ErrNoRows {
+		return model.Account{}, err
+	}
+
 	if err != nil {
 		cfg.Logs.Logger.Info(
 			"Error on db select",
@@ -248,6 +262,10 @@ func GetAccountByEmail(cfg *config.Config, email string) (model.Account, error) 
 	)
 
 	acc, err := scanAccount(row)
+
+	if err == pgx.ErrNoRows {
+		return model.Account{}, err
+	}
 
 	if err != nil {
 		cfg.Logs.Logger.Info(
@@ -311,6 +329,11 @@ func InsertAccountLogin(cfg *config.Config, al model.AccountLogin) (model.Accoun
 		al.Account_id,
 		al.Token_string,
 	).Scan(&al.Token_id)
+
+	if err == pgx.ErrNoRows {
+		return model.AccountLogin{}, err
+	}
+
 	if err != nil {
 		cfg.Logs.Logger.Info(
 			"Error on db insert",
