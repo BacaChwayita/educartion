@@ -2,7 +2,7 @@ Write-Host "Starting DB Setup Scripts..."
 
 # Create DB + Schemas
 Write-Host "Create DB"
-Get-Content .\scripts\database\001_create_database.sql | docker exec -i educartion-postgres psql -U postgres -d educartion_db
+Get-Content .\scripts\database\001_create_database.sql | docker exec -i educartion-postgres psql -U postgres -d postgres
 Write-Host "Create Schemas"
 Get-Content .\scripts\database\002_create_schemas.sql | docker exec -i educartion-postgres psql -U postgres -d educartion_db
 
