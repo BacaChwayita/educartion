@@ -1,0 +1,234 @@
+package db
+
+import (
+	"fmt"
+	"log/slog"
+	"time"
+
+	"github.com/P-SEN371-Group-3/educartion/config"
+	"github.com/P-SEN371-Group-3/educartion/model"
+	"github.com/jackc/pgx/v5"
+)
+
+const shipmentColumns = `
+		shipment_id,
+		order_id,
+		courier_name,
+		courier_type,
+		delivery_reference,
+		delivery_address_line1,
+		delivery_address_line2,
+		delivery_city,
+		delivery_state,
+		delivery_postal_code,
+		delivery_country,
+		recipient_name,
+		recipient_phone,
+		shipment_status,
+		dispatched_at,
+		delivered_at,
+		created_at
+`
+
+func scanShipment(row pgx.Row) (model.Shipment, error) {
+	var s model.Shipment
+
+	err := row.Scan(
+		&s.Shipment_id,
+		&s.Order_id,
+		&s.Courier_name,
+		&s.Courier_type,
+		&s.Delivery_reference,
+		&s.Delivery_address_line1,
+		&s.Delivery_address_line2,
+		&s.Delivery_city,
+		&s.Delivery_state,
+		&s.Delivery_postal_code,
+		&s.Delivery_country,
+		&s.Recipient_name,
+		&s.Recipient_phone,
+		&s.Shipment_status,
+		&s.Dispatched_at,
+		&s.Delivered_at,
+		&s.Created_at,
+	)
+
+	return s, err
+
+}
+
+func InsertShipment(s model.Shipment) (model.Shipment, error) {
+	cfg := config.GetConfig()
+
+	sql := `
+	INSERT INTO shipment (
+		order_id,
+		courier_name,
+		courier_type,
+		delivery_reference,
+		delivery_address_line1,
+		delivery_address_line2,
+		delivery_city,
+		delivery_state,
+		delivery_postal_code,
+		delivery_country,
+		recipient_name,
+		recipient_phone,
+		shipment_status,
+		dispatched_at,
+		delivered_at,
+		created_at
+	)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12,$13, $14, $15, $16)
+	RETURNING shipment_id
+	`
+
+	err := cfg.DBConnection.Pool.QueryRow(
+		cfg.DBConnection.Ctx,
+		sql,
+		s.Order_id,
+		s.Courier_name,
+		s.Courier_type,
+		s.Delivery_reference,
+		s.Delivery_address_line1,
+		s.Delivery_address_line2,
+		s.Delivery_city,
+		s.Delivery_state,
+		s.Delivery_postal_code,
+		s.Delivery_country,
+		s.Recipient_name,
+		s.Recipient_phone,
+		s.Shipment_status,
+		s.Dispatched_at,
+		s.Delivered_at,
+		s.Created_at,
+	).Scan(&s.Shipment_id)
+
+	if err == pgx.ErrNoRows {
+		return model.Shipment{}, err
+	}
+
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db insert",
+			slog.String("error", err.Error()),
+			slog.String("func", "InsertShipment"),
+			slog.String("timestamp", time.Now().GoString()),
+		)
+		return model.Shipment{}, fmt.Errorf("Error on db insert: %w", err)
+	}
+
+	cfg.Logs.Logger.Info(fmt.Sprintf("Created Shipment with ID: %d\n", s.Shipment_id))
+	return s, nil
+}
+
+func GetShipmentById(shipment_id int) (model.Shipment, error) {
+	cfg := config.GetConfig()
+
+	sql := `SELECT ` + shipmentColumns +
+		`
+			FROM shipment
+			WHERE shipment_id = $1
+		`
+
+	var s model.Shipment
+
+	row := cfg.DBConnection.Pool.QueryRow(
+		cfg.DBConnection.Ctx,
+		sql,
+		shipment_id,
+	)
+
+	s, err := scanShipment(row)
+
+	if err == pgx.ErrNoRows {
+		return model.Shipment{}, err
+	}
+
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db select",
+			slog.String("error", err.Error()),
+			slog.String("func", "GetShipmentById"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("shipment_id", shipment_id),
+		)
+		return model.Shipment{}, fmt.Errorf("Error on db select: %w", err)
+	}
+
+	return s, nil
+}
+
+func UpdateShipment(s model.Shipment) (int64, error) {
+	cfg := config.GetConfig()
+
+	sql := `
+	UPDATE shipment
+	Set name = $2,
+		contact_email = $3,
+		contact_phone = $4
+
+	WHERE shipment_id = $1
+	`
+
+	result, err := cfg.DBConnection.Pool.Exec(
+		cfg.DBConnection.Ctx,
+		sql,
+		s.Shipment_id,
+		s.Order_id,
+		s.Courier_name,
+		s.Courier_type,
+		s.Delivery_reference,
+		s.Delivery_address_line1,
+		s.Delivery_address_line2,
+		s.Delivery_city,
+		s.Delivery_state,
+		s.Delivery_postal_code,
+		s.Delivery_country,
+		s.Recipient_name,
+		s.Recipient_phone,
+		s.Shipment_status,
+		s.Dispatched_at,
+		s.Delivered_at,
+		s.Created_at,
+	)
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db update",
+			slog.String("error", err.Error()),
+			slog.String("func", "UpdateShipment"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("shipment_id", s.Shipment_id),
+		)
+		return -1, fmt.Errorf("Error on db update: %w", err)
+	}
+
+	return result.RowsAffected(), nil
+}
+
+func DeleteShipmentById(shipment_id int) (int64, error) {
+	cfg := config.GetConfig()
+
+	sql := `
+	DELETE FROM shipment
+	WHERE shipment_id = $1
+	`
+
+	result, err := cfg.DBConnection.Pool.Exec(
+		cfg.DBConnection.Ctx,
+		sql,
+		shipment_id,
+	)
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db update",
+			slog.String("error", err.Error()),
+			slog.String("func", "DeleteShipmentById"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("shipment_id", shipment_id),
+		)
+		return -1, fmt.Errorf("Error on db update: %w", err)
+	}
+
+	return result.RowsAffected(), nil
+}
