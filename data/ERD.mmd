@@ -2,12 +2,13 @@ erDiagram
 	direction LR
 
 	ACCOUNT ||--o{ CART : owns
+	ACCOUNT ||--o{ ACCOUNTLOGIN : authenticates_with
 	ACCOUNT ||--o{ "ORDER" : places
 	SUPPLIER ||--o{ PRODUCT : supplies
 	PRODUCT ||--o{ PRODUCT_IMAGE : has
 	CART ||--o{ CART_ITEM : contains
 	PRODUCT ||--o{ CART_ITEM : appears_in
-	"ORDER" ||--|{ ORDER_ITEM : contains
+	"ORDER" ||--o{ ORDER_ITEM : contains
 	PRODUCT ||--o{ ORDER_ITEM : appears_in
 	"ORDER" ||--o| PAYMENT : has
 	"ORDER" ||--o| SHIPMENT : has_shipment
@@ -18,6 +19,15 @@ erDiagram
 		string email UK
 		string password_hash
 		string role
+		int login_attempts
+		boolean is_active
+		datetime created_at
+	}
+
+	ACCOUNTLOGIN {
+		int token_id PK
+		int account_id FK
+		string token_string UK
 		datetime created_at
 	}
 
@@ -85,7 +95,7 @@ erDiagram
 
 	PAYMENT {
 		int payment_id PK
-		int order_id FK
+		int order_id FK, UK
 		string payment_method
 		string payment_status
 		string transaction_ref UK
@@ -95,7 +105,7 @@ erDiagram
 
 	SHIPMENT {
 		int shipment_id PK
-		int order_id FK
+		int order_id FK, UK
 		string courier_name
 		string courier_type
 		string delivery_reference UK
