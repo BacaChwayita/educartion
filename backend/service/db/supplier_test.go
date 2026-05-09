@@ -8,6 +8,14 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+func newTestSupplier() model.Supplier {
+	return model.Supplier{
+		Supplier_id:   -1,
+		Name:          "Test Name",
+		Contact_email: "test@testmail.com",
+		Contact_phone: "somehash",
+	}
+}
 func TestInsertSupplier(t *testing.T) {
 	newSupplier := model.Supplier{
 		Supplier_id:   -1,
