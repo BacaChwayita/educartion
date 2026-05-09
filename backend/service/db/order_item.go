@@ -11,52 +11,53 @@ import (
 )
 
 const orderItemColumns = `
-	order_item_id,
 	order_id,
-	product_name,
+	product_id,
 	quantity,
-	unit_price
+	unit_price,
+	discount_amount
 `
 
-func scanOrderItem(row pgx.Row) (model.OrderItem, error) {
-	var oi model.OrderItem
+func scanOrderItem(row pgx.Row) (model.Order_item, error) {
+	var oi model.Order_item
 
 	err := row.Scan(
-		&oi.Order_item_id,
 		&oi.Order_id,
-		&oi.Product_name,
+		&oi.Product_id,
 		&oi.Quantity,
 		&oi.Unit_price,
+		&oi.Discount_amount,
 	)
 
 	return oi, err
 }
 
-func InsertOrderItem(oi model.OrderItem) (model.OrderItem, error) {
+func InsertOrderItem(oi model.Order_item) (model.Order_item, error) {
 	cfg := config.GetConfig()
 
 	sql := `
 	INSERT INTO order_items (
 		order_id,
-		product_name,
+		product_id,
 		quantity,
-		unit_price
+		unit_price,
+		discount_amount
 	)
-	VALUES ($1, $2, $3, $4)
-	RETURNING order_item_id
+	VALUES ($1, $2, $3, $4, $5)
 	`
 
-	err := cfg.DBConnection.Pool.QueryRow(
+	row := cfg.DBConnection.Pool.QueryRow(
 		cfg.DBConnection.Ctx,
 		sql,
 		oi.Order_id,
-		oi.Product_name,
+		oi.Product_id,
 		oi.Quantity,
 		oi.Unit_price,
-	).Scan(&oi.Order_item_id)
+		oi.Discount_amount,
+	)
 
-	if err == pgx.ErrNoRows {
-		return model.OrderItem{}, err
+	if err := pgx.ErrNoRows {
+		return model.Order_item{}, err
 	}
 
 	if err != nil {
@@ -66,14 +67,14 @@ func InsertOrderItem(oi model.OrderItem) (model.OrderItem, error) {
 			slog.String("func", "InsertOrderItem"),
 			slog.String("timestamp", time.Now().GoString()),
 		)
-		return model.OrderItem{}, fmt.Errorf("Error on db insert: %w", err)
+		return model.Order_item{}, fmt.Errorf("Error on db insert: %w", err)
 	}
 
 	cfg.Logs.Logger.Info(fmt.Sprintf("Created OrderItem with ID: %d\n", oi.Order_item_id))
 	return oi, nil
 }
 
-func GetOrderItemById(order_item_id int) (model.OrderItem, error) {
+func GetOrderItemById(order_item_id int) (model.Order_item, error) {
 	cfg := config.GetConfig()
 
 	sql := `SELECT ` + orderItemColumns +
@@ -91,7 +92,7 @@ func GetOrderItemById(order_item_id int) (model.OrderItem, error) {
 	oi, err := scanOrderItem(row)
 
 	if err == pgx.ErrNoRows {
-		return model.OrderItem{}, err
+		return model.Order_item{}, err
 	}
 
 	if err != nil {
@@ -102,13 +103,13 @@ func GetOrderItemById(order_item_id int) (model.OrderItem, error) {
 			slog.String("timestamp", time.Now().GoString()),
 			slog.Int("order_item_id", order_item_id),
 		)
-		return model.OrderItem{}, fmt.Errorf("Error on db select: %w", err)
+		return model.Order_item{}, fmt.Errorf("Error on db select: %w", err)
 	}
 
 	return oi, nil
 }
 
-func UpdateOrderItem(oi model.OrderItem) (int64, error) {
+func UpdateOrderItem(oi model.Order_item) (int64, error) {
 	cfg := config.GetConfig()
 
 	sql := `

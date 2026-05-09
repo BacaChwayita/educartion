@@ -1,6 +1,7 @@
 package db_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
@@ -9,25 +10,41 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func newTestOrder() model.Order {
-	return model.Order{
-		Order_id:    -1,
-		Account_id:  1, // update to a valid account_id in your test DB
-		Supplier_id: 1, // update to a valid supplier_id in your test DB
-		Status:      "pending",
-		Notes:       "Test order notes",
-		Created_at:  time.Now(),
-		Updated_at:  time.Now(),
+func newTestOrder() model.Orders {
+	return model.Orders{
+		Order_id:        -1,
+		Account_id:      -1,
+		Order_number:    time.Now().GoString(),
+		Status:          "pending",
+		Subtotal_amount: 100000,
+		Discount_amount: 25000,
+		Total_amount:    75000,
+		Placed_at:       time.Now(),
 	}
 }
 
 func TestInsertOrder(t *testing.T) {
+	newOrder := newTestOrder()
+
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	ord, err := db.InsertOrder(newTestOrder())
+	newAcc := model.Account{
+		Account_id:    -1,
+		Full_name:     "Test Name",
+		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
+		Password_hash: "somehash",
+		Role:          "customer",
+		Created_at:    time.Now(),
+	}
+	acc, err := db.InsertAccount(newAcc)
+
+	newOrder.Account_id = acc.Account_id
+
+	ord, err := db.InsertOrder(newOrder)
+
 	if err != nil {
 		t.Errorf("InsertOrder() call failed: %s", err.Error())
 	}
@@ -38,71 +55,110 @@ func TestInsertOrder(t *testing.T) {
 }
 
 func TestGetOrderById(t *testing.T) {
+	insOrd := newTestOrder()
+
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	newOrd, err := db.InsertOrder(newTestOrder())
+	newAcc := model.Account{
+		Account_id:    -1,
+		Full_name:     "Test Name",
+		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
+		Password_hash: "somehash",
+		Role:          "customer",
+		Created_at:    time.Now(),
+	}
+	acc, err := db.InsertAccount(newAcc)
+
+	insOrd.Account_id = acc.Account_id
+
+	newOrd, err := db.InsertOrder(insOrd)
 	if err != nil {
 		t.Fatalf("InsertOrder() call failed: %s", err.Error())
 	}
 
 	getOrd, err := db.GetOrderById(newOrd.Order_id)
+
 	if err != nil {
-		t.Errorf("GetOrderById() call failed: %s", err.Error())
+		t.Errorf("Error not nil, got %s", err.Error())
 	}
 
 	if getOrd.Order_id != newOrd.Order_id {
 		t.Errorf(
-			"Got %d, Expected %d. Expected GetOrderById to return same order id as InsertOrder inserted.",
+			"Got %d, Expected %d. Expected GetOrder to return same order id as InsertOrder inserted.",
 			getOrd.Order_id,
 			newOrd.Order_id,
 		)
 	}
+
 }
 
 func TestUpdateOrder(t *testing.T) {
+	insOrd := newTestOrder()
+
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	newOrd, err := db.InsertOrder(newTestOrder())
+	newAcc := model.Account{
+		Account_id:    -1,
+		Full_name:     "Test Name",
+		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
+		Password_hash: "somehash",
+		Role:          "customer",
+		Created_at:    time.Now(),
+	}
+	acc, err := db.InsertAccount(newAcc)
+
+	insOrd.Account_id = acc.Account_id
+
+	newOrd, err := db.InsertOrder(insOrd)
 	if err != nil {
 		t.Fatalf("InsertOrder() call failed: %s", err.Error())
 	}
 
 	chgOrd := newOrd
-	chgOrd.Status = "confirmed"
-	chgOrd.Updated_at = time.Now()
-
+	chgOrd.Status = "paid"
 	rowCount, err := db.UpdateOrder(chgOrd)
 	if err != nil {
 		t.Errorf("UpdateOrder() call failed: %s", err.Error())
 	}
 
+	updatedOrd, err := db.GetOrderById(chgOrd.Order_id)
+
 	if rowCount != 1 {
 		t.Errorf("Expected 1 row affected, got %d", rowCount)
 	}
 
-	updatedOrd, err := db.GetOrderById(chgOrd.Order_id)
-	if err != nil {
-		t.Errorf("GetOrderById() after update failed: %s", err.Error())
-	}
-
-	if updatedOrd.Status != "confirmed" {
-		t.Errorf("Expected status 'confirmed', Got '%s'", updatedOrd.Status)
+	if updatedOrd.Status != "paid" {
+		t.Errorf("Expected 'paid', Got %s", updatedOrd.Status)
 	}
 }
 
 func TestDeleteOrderById(t *testing.T) {
+	insOrd := newTestOrder()
+
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
 
-	newOrd, err := db.InsertOrder(newTestOrder())
+	newAcc := model.Account{
+		Account_id:    -1,
+		Full_name:     "Test Name",
+		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
+		Password_hash: "somehash",
+		Role:          "customer",
+		Created_at:    time.Now(),
+	}
+	acc, err := db.InsertAccount(newAcc)
+
+	insOrd.Account_id = acc.Account_id
+
+	newOrd, err := db.InsertOrder(insOrd)
 	if err != nil {
 		t.Fatalf("InsertOrder() call failed: %s", err.Error())
 	}
@@ -118,7 +174,7 @@ func TestDeleteOrderById(t *testing.T) {
 
 	deletedOrd, err := db.GetOrderById(newOrd.Order_id)
 	if err != pgx.ErrNoRows {
-		t.Errorf("Expected pgx.ErrNoRows error to be returned, Got: %v", err)
+		t.Errorf("Expected pgx.ErrNoRows error to be returned, Got: %s", err.Error())
 	}
 
 	if deletedOrd.Order_id != 0 {
