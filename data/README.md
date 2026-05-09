@@ -25,6 +25,14 @@ psql -d educartion_db -f data\scripts\schema\001_create_tables_app.sql
 psql -d educartion_db -f data\scripts\schema\002_create_tables_app_test.sql
 ```
 
+## ERD
+
+The source ERD for the current database model is in:
+
+- `data\ERD.mmd`
+
+It reflects the shared table template in `data\scripts\schema\000_create_tables_for_schema.sql`, which is used to create both `app` and `app_test`.
+
 ## Docker scripts
 
 Docker scripts are in `data\scripts\docker` and run PostgreSQL plus the SQL files for each schema.

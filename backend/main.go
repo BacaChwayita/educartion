@@ -11,9 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-var pool *pgxpool.Pool
-var ctx = context.Background()
-var cfg config.Config
+var cfg *config.Config
 
 func handleRegister(w http.ResponseWriter, req *http.Request) {
 	cfg.Logs.Logger.Info("Register Request Received", slog.String("remoteAddress", req.RemoteAddr))
@@ -25,9 +23,22 @@ func handleRegister(w http.ResponseWriter, req *http.Request) {
 
 }
 
+func handleProducts(w http.ResponseWriter, req *http.Request) {
+	cfg.Logs.Logger.Info("Products Request Received", slog.String("remoteAddress", req.RemoteAddr))
+
+	// TODO: Products processing
+
+	// TODO: rpc.WriteJSON(writer, status, response)
+
+}
+
 func init() {
+	var err error
+
 	_ = godotenv.Load()
-	cfg = config.LoadConfig()
+	cfg = config.GetConfig()
+
+	cfg.DBConnection.Ctx = context.Background()
 
 	connectionString := fmt.Sprintf(
 		"postgresql://%s:%s@%s:%s/%s",
@@ -38,7 +49,7 @@ func init() {
 		cfg.DB.Database,
 	)
 
-	pool, err := pgxpool.New(ctx, connectionString)
+	cfg.DBConnection.Pool, err = pgxpool.New(cfg.DBConnection.Ctx, connectionString)
 	if err != nil {
 		cfg.Logs.Logger.Error("Unable to connect to database", slog.String("error", err.Error()))
 		panic("Unable to connect to database: " + err.Error())
@@ -47,7 +58,7 @@ func init() {
 	//
 	// verify the connection
 	//
-	if err := pool.Ping(ctx); err != nil {
+	if err = cfg.DBConnection.Pool.Ping(cfg.DBConnection.Ctx); err != nil {
 		cfg.Logs.Logger.Error("Unable to ping database:", slog.String("error", err.Error()))
 		panic("Unable to ping database:" + err.Error())
 	}
@@ -64,6 +75,7 @@ func main() {
 	// TODO: rest of Auth
 
 	// Catalog
+	http.Handle("/api/products", http.HandlerFunc(handleProducts))
 	// TODO: rest of Catalog
 
 	// Cart
