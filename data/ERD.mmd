@@ -3,15 +3,15 @@ erDiagram
 
 	ACCOUNT ||--o{ CART : owns
 	ACCOUNT ||--o{ ACCOUNTLOGIN : authenticates_with
-	ACCOUNT ||--o{ "ORDER" : places
+	ACCOUNT ||--o{ ORDERS : places
 	SUPPLIER ||--o{ PRODUCT : supplies
 	PRODUCT ||--o{ PRODUCT_IMAGE : has
 	CART ||--o{ CART_ITEM : contains
 	PRODUCT ||--o{ CART_ITEM : appears_in
-	"ORDER" ||--o{ ORDER_ITEM : contains
+	ORDERS ||--o{ ORDER_ITEM : contains
 	PRODUCT ||--o{ ORDER_ITEM : appears_in
-	"ORDER" ||--o| PAYMENT : has
-	"ORDER" ||--o| SHIPMENT : has_shipment
+	ORDERS ||--o| PAYMENT : has
+	ORDERS ||--o| SHIPMENT : has_shipment
 
 	ACCOUNT {
 		int account_id PK
@@ -63,6 +63,7 @@ erDiagram
 		int cart_id PK
 		int account_id FK
 		string session_key UK
+		int total_price
 		datetime created_at
 		datetime updated_at
 	}
@@ -74,7 +75,7 @@ erDiagram
 		decimal unit_price
 	}
 
-	"ORDER" {
+	ORDERS {
 		int order_id PK
 		int account_id FK
 		string order_number UK
