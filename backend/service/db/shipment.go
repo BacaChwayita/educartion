@@ -114,6 +114,7 @@ func InsertShipment(s model.Shipment) (model.Shipment, error) {
 			slog.String("error", err.Error()),
 			slog.String("func", "InsertShipment"),
 			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("order_id", s.Order_id),
 		)
 		return model.Shipment{}, fmt.Errorf("Error on db insert: %w", err)
 	}
@@ -164,9 +165,22 @@ func UpdateShipment(s model.Shipment) (int64, error) {
 
 	sql := `
 	UPDATE shipment
-	Set name = $2,
-		contact_email = $3,
-		contact_phone = $4
+	SET order_id = $2,
+		courier_name = $3,
+		courier_type = $4,
+		delivery_reference = $5,
+		delivery_address_line1 = $6,
+		delivery_address_line2 = $7,
+		delivery_city = $8,
+		delivery_state = $9,
+		delivery_postal_code = $10,
+		delivery_country = $11,
+		recipient_name = $12,
+		recipient_phone = $13,
+		shipment_status = $14,
+		dispatched_at = $15,
+		delivered_at = $16,
+		created_at = $17
 
 	WHERE shipment_id = $1
 	`

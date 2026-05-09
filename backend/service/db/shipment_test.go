@@ -13,13 +13,13 @@ import (
 //       Need to refactor to InsertOrder, which also needs an account_id
 //       Alternatively need dummy data in test db to refer to, ie order_id 1 and account_id 1 always existing there. (setup_db scripts)
 
-func TestInsertShipment(t *testing.T) {
-	newShipment := model.Shipment{
+func newTestShipment(order_id int) model.Shipment {
+	return model.Shipment{
 		Shipment_id:            -1,
-		Order_id:               -1,
+		Order_id:               order_id,
 		Courier_name:           "test name",
 		Courier_type:           "test type",
-		Delivery_reference:     "some ref",
+		Delivery_reference:     time.Now().GoString(),
 		Delivery_address_line1: "10 bard street",
 		Delivery_address_line2: "Bards Alley",
 		Delivery_city:          "Bards City",
@@ -33,11 +33,26 @@ func TestInsertShipment(t *testing.T) {
 		Delivered_at:           time.Now(),
 		Created_at:             time.Now(),
 	}
+}
+
+func TestInsertShipment(t *testing.T) {
 
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
+
+	ord, err := newTestOrder()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	ord, err = db.InsertOrder(ord)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	newShipment := newTestShipment(ord.Order_id)
 
 	ship, err := db.InsertShipment(newShipment)
 
@@ -50,31 +65,23 @@ func TestInsertShipment(t *testing.T) {
 	}
 }
 
-func TestGetShiplierById(t *testing.T) {
-	insShip := model.Shipment{
-		Shipment_id:            -1,
-		Order_id:               -1,
-		Courier_name:           "test name",
-		Courier_type:           "test type",
-		Delivery_reference:     "some ref",
-		Delivery_address_line1: "10 bard street",
-		Delivery_address_line2: "Bards Alley",
-		Delivery_city:          "Bards City",
-		Delivery_state:         "BardState",
-		Delivery_postal_code:   "1234",
-		Delivery_country:       "Bards Country",
-		Recipient_name:         "John Doe",
-		Recipient_phone:        "+27 12 345 6789",
-		Shipment_status:        "pending",
-		Dispatched_at:          time.Now(),
-		Delivered_at:           time.Now(),
-		Created_at:             time.Now(),
-	}
-
+func TestGetShipmentById(t *testing.T) {
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
+
+	ord, err := newTestOrder()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	ord, err = db.InsertOrder(ord)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	insShip := newTestShipment(ord.Order_id)
 
 	newShip, err := db.InsertShipment(insShip)
 	if err != nil {
@@ -98,30 +105,23 @@ func TestGetShiplierById(t *testing.T) {
 }
 
 func TestUpdateShipment(t *testing.T) {
-	insShip := model.Shipment{
-		Shipment_id:            -1,
-		Order_id:               -1,
-		Courier_name:           "test name",
-		Courier_type:           "test type",
-		Delivery_reference:     "some ref",
-		Delivery_address_line1: "10 bard street",
-		Delivery_address_line2: "Bards Alley",
-		Delivery_city:          "Bards City",
-		Delivery_state:         "BardState",
-		Delivery_postal_code:   "1234",
-		Delivery_country:       "Bards Country",
-		Recipient_name:         "John Doe",
-		Recipient_phone:        "+27 12 345 6789",
-		Shipment_status:        "pending",
-		Dispatched_at:          time.Now(),
-		Delivered_at:           time.Now(),
-		Created_at:             time.Now(),
-	}
 
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
+
+	ord, err := newTestOrder()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	ord, err = db.InsertOrder(ord)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	insShip := newTestShipment(ord.Order_id)
 
 	newShip, err := db.InsertShipment(insShip)
 	if err != nil {
@@ -147,30 +147,22 @@ func TestUpdateShipment(t *testing.T) {
 }
 
 func TestDeleteShipmentById(t *testing.T) {
-	insShip := model.Shipment{
-		Shipment_id:            -1,
-		Order_id:               -1,
-		Courier_name:           "test name",
-		Courier_type:           "test type",
-		Delivery_reference:     "some ref",
-		Delivery_address_line1: "10 bard street",
-		Delivery_address_line2: "Bards Alley",
-		Delivery_city:          "Bards City",
-		Delivery_state:         "BardState",
-		Delivery_postal_code:   "1234",
-		Delivery_country:       "Bards Country",
-		Recipient_name:         "John Doe",
-		Recipient_phone:        "+27 12 345 6789",
-		Shipment_status:        "pending",
-		Dispatched_at:          time.Now(),
-		Delivered_at:           time.Now(),
-		Created_at:             time.Now(),
-	}
-
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
+
+	ord, err := newTestOrder()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	ord, err = db.InsertOrder(ord)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	insShip := newTestShipment(ord.Order_id)
 
 	newShip, err := db.InsertShipment(insShip)
 	if err != nil {
