@@ -57,6 +57,7 @@ type Cart struct {
 	Cart_id     int       `json:"cart_id"`
 	Account_id  int       `json:"account_id"`
 	Session_key string    `json:"session_key"`
+	Total_Price int       `json:"total_price"`
 	Created_at  time.Time `json:"created_at"`
 	Updated_at  time.Time `json:"updated_at"`
 }

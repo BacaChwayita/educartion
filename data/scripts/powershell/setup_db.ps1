@@ -18,5 +18,22 @@ docker exec -it educartion-postgres psql -U postgres -d educartion_db -c "\dt ap
 Write-Host "Check Test Tables"
 docker exec -it educartion-postgres psql -U postgres -d educartion_db -c "\dt app_test.*"
 
+# Drop tables
+Write-Host "Drop Tables"
+docker exec -it educartion-postgres psql -U postgres -d educartion_db -c "DROP TABLE IF EXISTS app.cart_item CASCADE;"
+Write-Host "Drop Test Tables"
+docker exec -it educartion-postgres psql -U postgres -d educartion_db -c "DROP TABLE IF EXISTS app.cart CASCADE;"
+
+Write-Host "Drop Test Tables"
+docker exec -it educartion-postgres psql -U postgres -d educartion_db -c "DROP TABLE IF EXISTS app_test.cart_item CASCADE;"
+Write-Host "Drop Test Tables"
+docker exec -it educartion-postgres psql -U postgres -d educartion_db -c "DROP TABLE IF EXISTS app_test.cart CASCADE;"
+
+# Confirm tables dropped
+Write-Host "Check Tables"
+docker exec -it educartion-postgres psql -U postgres -d educartion_db -c "\dt app.*"
+Write-Host "Check Test Tables"
+docker exec -it educartion-postgres psql -U postgres -d educartion_db -c "\dt app_test.*"
+
 # Done
 Write-Host "Done"
