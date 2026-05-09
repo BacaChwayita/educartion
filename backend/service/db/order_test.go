@@ -10,27 +10,7 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func newTestOrder() model.Orders {
-	return model.Orders{
-		Order_id:        -1,
-		Account_id:      -1,
-		Order_number:    time.Now().GoString(),
-		Status:          "pending",
-		Subtotal_amount: 100000,
-		Discount_amount: 25000,
-		Total_amount:    75000,
-		Placed_at:       time.Now(),
-	}
-}
-
-func TestInsertOrder(t *testing.T) {
-	newOrder := newTestOrder()
-
-	err := SetupTestDBConfigAndConnection()
-	if err != nil {
-		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
-	}
-
+func newTestOrder() (model.Orders, error) {
 	newAcc := model.Account{
 		Account_id:    -1,
 		Full_name:     "Test Name",
@@ -40,8 +20,32 @@ func TestInsertOrder(t *testing.T) {
 		Created_at:    time.Now(),
 	}
 	acc, err := db.InsertAccount(newAcc)
+	if err != nil {
+		return model.Orders{}, err
+	}
 
-	newOrder.Account_id = acc.Account_id
+	return model.Orders{
+		Order_id:        -1,
+		Account_id:      acc.Account_id,
+		Order_number:    time.Now().GoString(),
+		Status:          "pending",
+		Subtotal_amount: 100000,
+		Discount_amount: 25000,
+		Total_amount:    75000,
+		Placed_at:       time.Now(),
+	}, nil
+}
+
+func TestInsertOrder(t *testing.T) {
+	newOrder, err := newTestOrder()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	err = SetupTestDBConfigAndConnection()
+	if err != nil {
+		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
+	}
 
 	ord, err := db.InsertOrder(newOrder)
 
@@ -55,24 +59,15 @@ func TestInsertOrder(t *testing.T) {
 }
 
 func TestGetOrderById(t *testing.T) {
-	insOrd := newTestOrder()
+	insOrd, err := newTestOrder()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 
-	err := SetupTestDBConfigAndConnection()
+	err = SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
-
-	newAcc := model.Account{
-		Account_id:    -1,
-		Full_name:     "Test Name",
-		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
-		Password_hash: "somehash",
-		Role:          "customer",
-		Created_at:    time.Now(),
-	}
-	acc, err := db.InsertAccount(newAcc)
-
-	insOrd.Account_id = acc.Account_id
 
 	newOrd, err := db.InsertOrder(insOrd)
 	if err != nil {
@@ -96,24 +91,15 @@ func TestGetOrderById(t *testing.T) {
 }
 
 func TestUpdateOrder(t *testing.T) {
-	insOrd := newTestOrder()
+	insOrd, err := newTestOrder()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 
-	err := SetupTestDBConfigAndConnection()
+	err = SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
-
-	newAcc := model.Account{
-		Account_id:    -1,
-		Full_name:     "Test Name",
-		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
-		Password_hash: "somehash",
-		Role:          "customer",
-		Created_at:    time.Now(),
-	}
-	acc, err := db.InsertAccount(newAcc)
-
-	insOrd.Account_id = acc.Account_id
 
 	newOrd, err := db.InsertOrder(insOrd)
 	if err != nil {
@@ -139,24 +125,15 @@ func TestUpdateOrder(t *testing.T) {
 }
 
 func TestDeleteOrderById(t *testing.T) {
-	insOrd := newTestOrder()
+	insOrd, err := newTestOrder()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 
-	err := SetupTestDBConfigAndConnection()
+	err = SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf("SetupTestDBConfigAndConnection() call failed: %s", err.Error())
 	}
-
-	newAcc := model.Account{
-		Account_id:    -1,
-		Full_name:     "Test Name",
-		Email:         fmt.Sprintf("%s@testmail.com", time.Now()),
-		Password_hash: "somehash",
-		Role:          "customer",
-		Created_at:    time.Now(),
-	}
-	acc, err := db.InsertAccount(newAcc)
-
-	insOrd.Account_id = acc.Account_id
 
 	newOrd, err := db.InsertOrder(insOrd)
 	if err != nil {

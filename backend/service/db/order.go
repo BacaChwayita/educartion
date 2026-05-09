@@ -18,7 +18,7 @@ const orderColumns = `
 		subtotal_amount,
 		discount_amount,
 		total_amount,
-		placed_at,
+		placed_at
 `
 
 func scanOrder(row pgx.Row) (model.Orders, error) {
@@ -91,7 +91,7 @@ func GetOrderById(order_id int) (model.Orders, error) {
 
 	sql := `SELECT ` + orderColumns +
 		`
-			FROM order
+			FROM orders
 			WHERE order_id = $1
 		`
 

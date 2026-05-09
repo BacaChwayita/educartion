@@ -8,6 +8,18 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
+func newTestProduct(supplier_id int) model.Product {
+	return model.Product{
+		Product_id:       -1,
+		Supplier_id:      supplier_id,
+		Name:             "Test Product",
+		Description:      "Test Description",
+		Price:            19999,
+		Discount_percent: 0,
+		Stock_quantity:   10,
+		Is_active:        true,
+	}
+}
 func TestInsertProduct(t *testing.T) {
 
 	newProduct := model.Product{

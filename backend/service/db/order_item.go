@@ -36,7 +36,7 @@ func InsertOrderItem(oi model.Order_item) (model.Order_item, error) {
 	cfg := config.GetConfig()
 
 	sql := `
-	INSERT INTO order_items (
+	INSERT INTO order_item (
 		order_id,
 		product_id,
 		quantity,
@@ -46,7 +46,7 @@ func InsertOrderItem(oi model.Order_item) (model.Order_item, error) {
 	VALUES ($1, $2, $3, $4, $5)
 	`
 
-	row := cfg.DBConnection.Pool.QueryRow(
+	_, err := cfg.DBConnection.Pool.Exec(
 		cfg.DBConnection.Ctx,
 		sql,
 		oi.Order_id,
@@ -55,10 +55,6 @@ func InsertOrderItem(oi model.Order_item) (model.Order_item, error) {
 		oi.Unit_price,
 		oi.Discount_amount,
 	)
-
-	if err := pgx.ErrNoRows {
-		return model.Order_item{}, err
-	}
 
 	if err != nil {
 		cfg.Logs.Logger.Info(
@@ -70,23 +66,25 @@ func InsertOrderItem(oi model.Order_item) (model.Order_item, error) {
 		return model.Order_item{}, fmt.Errorf("Error on db insert: %w", err)
 	}
 
-	cfg.Logs.Logger.Info(fmt.Sprintf("Created OrderItem with ID: %d\n", oi.Order_item_id))
+	cfg.Logs.Logger.Info(fmt.Sprintf("Created OrderItem with IDs: Order_id(%d), Product_id(%d)\n", oi.Order_id, oi.Product_id))
 	return oi, nil
 }
 
-func GetOrderItemById(order_item_id int) (model.Order_item, error) {
+func GetOrderItemById(order_id, product_id int) (model.Order_item, error) {
 	cfg := config.GetConfig()
 
 	sql := `SELECT ` + orderItemColumns +
 		`
-		FROM order_items
-		WHERE order_item_id = $1
+		FROM order_item
+		WHERE order_id   = $1
+		  AND product_id = $2
 		`
 
 	row := cfg.DBConnection.Pool.QueryRow(
 		cfg.DBConnection.Ctx,
 		sql,
-		order_item_id,
+		order_id,
+		product_id,
 	)
 
 	oi, err := scanOrderItem(row)
@@ -101,7 +99,8 @@ func GetOrderItemById(order_item_id int) (model.Order_item, error) {
 			slog.String("error", err.Error()),
 			slog.String("func", "GetOrderItemById"),
 			slog.String("timestamp", time.Now().GoString()),
-			slog.Int("order_item_id", order_item_id),
+			slog.Int("order_id", order_id),
+			slog.Int("product_id", product_id),
 		)
 		return model.Order_item{}, fmt.Errorf("Error on db select: %w", err)
 	}
@@ -113,22 +112,22 @@ func UpdateOrderItem(oi model.Order_item) (int64, error) {
 	cfg := config.GetConfig()
 
 	sql := `
-	UPDATE order_items
-	SET order_id     = $2,
-		product_name = $3,
-		quantity     = $4,
-		unit_price   = $5
-	WHERE order_item_id = $1
+	UPDATE order_item
+	SET quantity        = $3,
+		unit_price      = $4,
+		discount_amount = $5
+	WHERE order_id   = $1
+	  AND product_id = $2
 	`
 
 	result, err := cfg.DBConnection.Pool.Exec(
 		cfg.DBConnection.Ctx,
 		sql,
-		oi.Order_item_id,
 		oi.Order_id,
-		oi.Product_name,
+		oi.Product_id,
 		oi.Quantity,
 		oi.Unit_price,
+		oi.Discount_amount,
 	)
 	if err != nil {
 		cfg.Logs.Logger.Info(
@@ -136,7 +135,8 @@ func UpdateOrderItem(oi model.Order_item) (int64, error) {
 			slog.String("error", err.Error()),
 			slog.String("func", "UpdateOrderItem"),
 			slog.String("timestamp", time.Now().GoString()),
-			slog.Int("order_item_id", oi.Order_item_id),
+			slog.Int("order_id", oi.Order_id),
+			slog.Int("product_id", oi.Product_id),
 		)
 		return -1, fmt.Errorf("Error on db update: %w", err)
 	}
@@ -144,18 +144,20 @@ func UpdateOrderItem(oi model.Order_item) (int64, error) {
 	return result.RowsAffected(), nil
 }
 
-func DeleteOrderItemById(order_item_id int) (int64, error) {
+func DeleteOrderItemById(order_id, product_id int) (int64, error) {
 	cfg := config.GetConfig()
 
 	sql := `
-	DELETE FROM order_items
-	WHERE order_item_id = $1
-	`
+	DELETE FROM order_item
+	WHERE order_id   = $1
+	  AND product_id = $2
+	  `
 
 	result, err := cfg.DBConnection.Pool.Exec(
 		cfg.DBConnection.Ctx,
 		sql,
-		order_item_id,
+		order_id,
+		product_id,
 	)
 	if err != nil {
 		cfg.Logs.Logger.Info(
@@ -163,7 +165,8 @@ func DeleteOrderItemById(order_item_id int) (int64, error) {
 			slog.String("error", err.Error()),
 			slog.String("func", "DeleteOrderItemById"),
 			slog.String("timestamp", time.Now().GoString()),
-			slog.Int("order_item_id", order_item_id),
+			slog.Int("order_id", order_id),
+			slog.Int("product_id", product_id),
 		)
 		return -1, fmt.Errorf("Error on db delete: %w", err)
 	}
