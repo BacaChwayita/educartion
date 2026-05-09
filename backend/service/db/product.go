@@ -16,10 +16,9 @@ const productColumns = `
 	name,
 	description,
 	price,
+	discount_percent,
 	stock_quantity,
-	category,
-	created_at
-
+	is_active
 `
 
 func scanProduct(row pgx.Row) (model.Product, error) {
@@ -32,9 +31,9 @@ func scanProduct(row pgx.Row) (model.Product, error) {
 		&p.Name,
 		&p.Description,
 		&p.Price,
+		&p.Discount_percent,
 		&p.Stock_quantity,
-		&p.Category,
-		&p.Created_at,
+		&p.Is_active,
 	)
 
 	return p, err
@@ -50,40 +49,39 @@ func InsertProduct(p model.Product) (model.Product, error) {
 		name,
 		description,
 		price,
+		discount_percent,
 		stock_quantity,
-		category,
-		created_at
+		is_active
 	)
 	VALUES ($1, $2, $3, $4, $5, $6, $7)
 	RETURNING product_id
 
-`
-err := cfg.DBConnection.Pool.QueryRow(
+	`
+	err := cfg.DBConnection.Pool.QueryRow(
 		cfg.DBConnection.Ctx,
 		sql,
 		p.Supplier_id,
 		p.Name,
 		p.Description,
 		p.Price,
+		p.Discount_percent,
 		p.Stock_quantity,
-		p.Category,
-		p.Created_at,
-
+		p.Is_active,
 	).Scan(&p.Product_id)
 
-	
-if err == pgx.ErrNoRows {
-		return model.Product{}, err
+	if err == pgx.ErrNoRows {
 		if err != nil {
 
 			cfg.Logs.Logger.Info(
-			"Error on db insert",
-			slog.String("error", err.Error()),
-			slog.String("func", "InsertProduct"),
-			slog.String("timestamp", time.Now().GoString()),
-		)
+				"Error on db insert",
+				slog.String("error", err.Error()),
+				slog.String("func", "InsertProduct"),
+				slog.String("timestamp", time.Now().GoString()),
+			)
 
-		return model.Product{}, fmt.Errorf("Error on db insert: %w", err)
+			return model.Product{}, fmt.Errorf("Error on db insert: %w", err)
+		}
+
 	}
 
 	cfg.Logs.Logger.Info(
@@ -93,10 +91,9 @@ if err == pgx.ErrNoRows {
 	return p, nil
 }
 
-
 func GetProductById(product_id int) (model.Product, error) {
 
- cfg := config.GetConfig()
+	cfg := config.GetConfig()
 
 	sql := `SELECT ` + productColumns +
 		`
@@ -172,9 +169,9 @@ func GetAllProducts() ([]model.Product, error) {
 			&p.Name,
 			&p.Description,
 			&p.Price,
+			&p.Discount_percent,
 			&p.Stock_quantity,
-			&p.Category,
-			&p.Created_at,
+			&p.Is_active,
 		)
 
 		if err != nil {
@@ -197,8 +194,9 @@ func UpdateProduct(p model.Product) (int64, error) {
 		name = $3,
 		description = $4,
 		price = $5,
-		stock_quantity = $6,
-		category = $7
+		discount_percent = $6,
+		stock_quantity = $7,
+		is_active = $8
 
 	WHERE product_id = $1
 	`
@@ -211,8 +209,9 @@ func UpdateProduct(p model.Product) (int64, error) {
 		p.Name,
 		p.Description,
 		p.Price,
+		p.Discount_percent,
 		p.Stock_quantity,
-		p.Category,
+		p.Is_active,
 	)
 
 	if err != nil {
@@ -261,3 +260,4 @@ func DeleteProductById(product_id int) (int64, error) {
 
 	return result.RowsAffected(), nil
 }
+

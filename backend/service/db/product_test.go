@@ -2,7 +2,6 @@ package db_test
 
 import (
 	"testing"
-	"time"
 
 	"github.com/P-SEN371-Group-3/educartion/model"
 	"github.com/P-SEN371-Group-3/educartion/service/db"
@@ -12,14 +11,14 @@ import (
 func TestInsertProduct(t *testing.T) {
 
 	newProduct := model.Product{
-		Product_id:    -1,
-		Supplier_id:   1,
-		Name:          "Test Product",
-		Description:   "Test Description",
-		Price:         199.99,
-		Stock_quantity: 10,
-		Category:      "Electronics",
-		Created_at:    time.Now(),
+		Product_id:       -1,
+		Supplier_id:      1,
+		Name:             "Test Product",
+		Description:      "Test Description",
+		Price:            19999,
+		Discount_percent: 0,
+		Stock_quantity:   10,
+		Is_active:        true,
 	}
 
 	err := SetupTestDBConfigAndConnection()
@@ -48,14 +47,14 @@ func TestInsertProduct(t *testing.T) {
 func TestGetProductById(t *testing.T) {
 
 	insProd := model.Product{
-		Product_id:    -1,
-		Supplier_id:   1,
-		Name:          "Test Product",
-		Description:   "Test Description",
-		Price:         199.99,
-		Stock_quantity: 10,
-		Category:      "Electronics",
-		Created_at:    time.Now(),
+		Product_id:       -1,
+		Supplier_id:      1,
+		Name:             "Test Product",
+		Description:      "Test Description",
+		Price:            19999,
+		Discount_percent: 0,
+		Stock_quantity:   10,
+		Is_active:        true,
 	}
 
 	err := SetupTestDBConfigAndConnection()
@@ -90,14 +89,14 @@ func TestGetProductById(t *testing.T) {
 func TestUpdateProduct(t *testing.T) {
 
 	insProd := model.Product{
-		Product_id:    -1,
-		Supplier_id:   1,
-		Name:          "Test Product",
-		Description:   "Test Description",
-		Price:         199.99,
-		Stock_quantity: 10,
-		Category:      "Electronics",
-		Created_at:    time.Now(),
+		Product_id:       -1,
+		Supplier_id:      1,
+		Name:             "Test Product",
+		Description:      "Test Description",
+		Price:            19999,
+		Discount_percent: 0,
+		Stock_quantity:   10,
+		Is_active:        true,
 	}
 
 	err := SetupTestDBConfigAndConnection()
@@ -115,7 +114,7 @@ func TestUpdateProduct(t *testing.T) {
 
 	// Create updated copy
 	chgProd := newProd
-	chgProd.Price = 299.99
+	chgProd.Price = 29999
 	chgProd.Stock_quantity = 25
 
 	rowCount, err := db.UpdateProduct(chgProd)
@@ -132,9 +131,9 @@ func TestUpdateProduct(t *testing.T) {
 	}
 
 	// Validate updated values
-	if updatedProd.Price != 299.99 {
+	if updatedProd.Price != 29999 {
 		t.Errorf(
-			"Expected 299.99, Got %f",
+			"Expected 29999, Got %d",
 			updatedProd.Price,
 		)
 	}
@@ -149,14 +148,14 @@ func TestUpdateProduct(t *testing.T) {
 func TestDeleteProductById(t *testing.T) {
 
 	insProd := model.Product{
-		Product_id:    -1,
-		Supplier_id:   1,
-		Name:          "Test Product",
-		Description:   "Test Description",
-		Price:         199.99,
-		Stock_quantity: 10,
-		Category:      "Electronics",
-		Created_at:    time.Now(),
+		Product_id:       -1,
+		Supplier_id:      1,
+		Name:             "Test Product",
+		Description:      "Test Description",
+		Price:            19999,
+		Discount_percent: 0,
+		Stock_quantity:   10,
+		Is_active:        true,
 	}
 
 	err := SetupTestDBConfigAndConnection()
@@ -178,7 +177,7 @@ func TestDeleteProductById(t *testing.T) {
 		t.Errorf("DeleteProductById() call failed: %s", err.Error())
 	}
 
-if rowCount != 1 {
+	if rowCount != 1 {
 		t.Errorf("Expected 1, got %d", rowCount)
 	}
 
@@ -200,91 +199,3 @@ if rowCount != 1 {
 		)
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
