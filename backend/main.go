@@ -71,7 +71,8 @@ func main() {
 	cfg.Logs.Logger.Info("Service Ready")
 
 	// Auth
-	http.Handle("/api/auth/register", http.HandlerFunc(handleRegister))
+	http.Handle("/api/auth/register", setHandlerFunc(http.HandlerFunc(handleRegister)))
+	http.Handle("/api/auth/login", setHandlerFunc(http.HandlerFunc(handleLogin)))
 	// TODO: rest of Auth
 
 	// Catalog
@@ -93,4 +94,46 @@ func main() {
 	portString := fmt.Sprintf(":%s", cfg.Port)
 	http.ListenAndServe(portString, nil)
 
+}
+
+// setHandlerFunc is a wrapper function that will set context and log requests
+// before asking the @handler function to serve the request
+func setHandlerFunc(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		reqID := r.Header.Get("X-Request-ID")
+		if reqID == "" {
+			reqID = uuid.New().String()
+		}
+
+		ctx := context.WithValue(r.Context(), server.RequestIDKey, reqID)
+
+		start := time.Now()
+
+		// Logging before the request has been processed
+		cfg.Logs.Logger.Info(
+			"Request received",
+			slog.String("func", "setHandlerFunc"),
+			slog.String("timestamp", start.GoString()),
+			slog.String("x-request-id", reqID),
+			slog.String("method", r.Method),
+			slog.String("url", r.RequestURI),
+			slog.String("remoteAddress", r.RemoteAddr),
+		)
+
+		// Call the actual handler and time it
+		handler.ServeHTTP(w, r.WithContext(ctx))
+		end := time.Now()
+
+		// Logging after request has been processed
+		cfg.Logs.Logger.Info(
+			"Request completed",
+			slog.String("func", "setHandlerFunc"),
+			slog.String("timestamp", end.GoString()),
+			slog.Duration("duration", end.Sub(start)),
+			slog.String("x-request-id", reqID),
+			slog.String("method", r.Method),
+			slog.String("url", r.RequestURI),
+			slog.String("remoteAddress", r.RemoteAddr),
+		)
+	})
 }
