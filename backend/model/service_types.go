@@ -6,6 +6,14 @@ type RegisterRequest struct {
 	Password_text string `json:"password_hash"`
 }
 
+type RegisterResponse struct {
+	Account_id int    `json:"account_id"`
+	Full_name  string `json:"full_name"`
+	Email      string `json:"email"`
+	Role       string `json:"role"`
+	Token      string `json:"token"`
+}
+
 type LoginWithEmailRequest struct {
 	Email         string `json:"email"`
 	Password_text string `json:"password_hash"`
