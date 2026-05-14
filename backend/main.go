@@ -65,7 +65,8 @@ func main() {
 	// Auth
 	http.Handle("/api/auth/register", setHandlerFunc(http.HandlerFunc(handler.HandleRegister)))
 	http.Handle("/api/auth/login", setHandlerFunc(http.HandlerFunc(handler.HandleLogin)))
-	// TODO: rest of Auth
+	http.Handle("/api/auth/logout", setHandlerFunc(http.HandlerFunc(handler.HandleLogout)))
+	http.Handle("/api/auth/me", setHandlerFunc(http.HandlerFunc(handler.HandleGetUser)))
 
 	// Catalog
 	http.Handle("/api/products", http.HandlerFunc(handleProducts))

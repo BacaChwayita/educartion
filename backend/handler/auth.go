@@ -15,19 +15,12 @@ import (
 
 // handleRegister will register a user
 func HandleRegister(w http.ResponseWriter, req *http.Request) {
-	cfg := config.GetConfig()
 	var err error
 
 	var rr model.RegisterRequest
 	err = json.NewDecoder(req.Body).Decode(&rr)
 	if err != nil {
-		cfg.Logs.Logger.Error(
-			"Failed to decode http request body",
-			slog.String("error", err.Error()),
-			slog.String("func", "handleRegister"),
-			slog.String("timestamp", time.Now().GoString()),
-			slog.String("x-request-id", req.Context().Value(RequestIDKey).(string)),
-		)
+		logErrDecodeBody("HandleRegister", req, err)
 		rpc.WriteError(w, http.StatusBadRequest, rpc.ErrDecodeHTTPRequestBody)
 	}
 
@@ -52,13 +45,7 @@ func HandleLogin(w http.ResponseWriter, req *http.Request) {
 	var lr model.LoginWithEmailRequest
 	err = json.NewDecoder(req.Body).Decode(&lr)
 	if err != nil {
-		cfg.Logs.Logger.Error(
-			"Failed to decode http request body",
-			slog.String("error", err.Error()),
-			slog.String("func", "handleLogin"),
-			slog.String("timestamp", time.Now().GoString()),
-			slog.String("x-request-id", req.Context().Value(RequestIDKey).(string)),
-		)
+		logErrDecodeBody("HandleLogin", req, err)
 		rpc.WriteError(w, http.StatusBadRequest, rpc.ErrDecodeHTTPRequestBody)
 	}
 
@@ -67,7 +54,7 @@ func HandleLogin(w http.ResponseWriter, req *http.Request) {
 		cfg.Logs.Logger.Error(
 			"Failed to login newly registered user",
 			slog.String("error", err.Error()),
-			slog.String("func", "handleRegister"),
+			slog.String("func", "HandleRegister"),
 			slog.String("timestamp", time.Now().GoString()),
 			slog.String("x-request-id", req.Context().Value(RequestIDKey).(string)),
 		)
@@ -96,4 +83,52 @@ func HandleLogin(w http.ResponseWriter, req *http.Request) {
 
 	rpc.WriteJSON(w, http.StatusOK, response)
 
+}
+
+// handleLogout will logout a user by invalidating the JWT
+func HandleLogout(w http.ResponseWriter, req *http.Request) {
+	var lr model.LogoutRequest
+	err := json.NewDecoder(req.Body).Decode(&lr)
+	if err != nil {
+		logErrDecodeBody("HandleLogout", req, err)
+		rpc.WriteError(w, http.StatusBadRequest, rpc.ErrDecodeHTTPRequestBody)
+	}
+
+	err = auth.Logout(lr)
+	if err == auth.ErrAccountLoginNotFound {
+		rpc.WriteError(w, http.StatusNotFound, "No record found in database")
+	}
+
+	if err != nil {
+		rpc.WriteError(w, 500, "Server error occured during logout process")
+	}
+
+	rpc.WriteJSON(w, http.StatusNoContent, nil)
+}
+
+// handleGetUser will get return the 'logged in' user details
+func HandleGetUser(w http.ResponseWriter, req *http.Request) {
+	var gur model.GetUserRequest
+	err := json.NewDecoder(req.Body).Decode(&gur)
+	if err != nil {
+		logErrDecodeBody("HandleGetUser", req, err)
+		rpc.WriteError(w, http.StatusBadRequest, rpc.ErrDecodeHTTPRequestBody)
+	}
+
+}
+
+// ------------
+// Helper funcs
+// ------------
+
+func logErrDecodeBody(func_name string, req *http.Request, err error) {
+	cfg := config.GetConfig()
+
+	cfg.Logs.Logger.Error(
+		"Failed to decode http request body",
+		slog.String("error", err.Error()),
+		slog.String("func", func_name),
+		slog.String("timestamp", time.Now().GoString()),
+		slog.String("x-request-id", req.Context().Value(RequestIDKey).(string)),
+	)
 }

@@ -150,3 +150,22 @@ func LoginWithEmail(lr model.LoginWithEmailRequest) (string, model.Account, erro
 
 	return tokenString, acc, nil
 }
+
+func Logout(lr model.LogoutRequest) error {
+
+	rowcount, err := db.DeleteAccountLoginByToken(lr.Token)
+	if err != nil {
+		return ErrUnkown
+	}
+
+	if rowcount == 0 {
+		return ErrAccountLoginNotFound
+	}
+
+	if rowcount != 1 {
+		return ErrUnkown
+	}
+
+	return nil
+
+}
