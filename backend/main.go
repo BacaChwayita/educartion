@@ -76,6 +76,7 @@ func main() {
 	// TODO: rest of Cart
 
 	// Orders
+	http.Handle("/api/orders/{id}", setHandlerFunc(http.HandlerFunc(handler.HandleGetOrderByID)))
 	// TODO: rest of Orders
 
 	// Payments

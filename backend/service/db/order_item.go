@@ -173,3 +173,8 @@ func DeleteOrderItemById(order_id, product_id int) (int64, error) {
 
 	return result.RowsAffected(), nil
 }
+
+func GetOrderItems(order_id int) ([]model.Order_item, error) {
+	// TODO: this is a placeholder function for now!!
+	return []model.Order_item{}, nil
+}
