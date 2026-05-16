@@ -261,3 +261,63 @@ func DeleteProductById(product_id int) (int64, error) {
 	return result.RowsAffected(), nil
 }
 
+func SearchProduct(products []model.Product, query string) ([]model.Product, error) {
+	if query == "" {
+		return nil, errors.New("search query cannot be empty")
+	}
+
+	var results []model.Product
+
+	for _, p := range products {
+		// simple case-insensitive contains search
+		if containsIgnoreCase(p.Name, query) {
+			results = append(results, p)
+		}
+	}
+
+	if len(results) == 0 {
+		return nil, errors.New("no products found")
+	} 
+
+	return results, nil
+}
+
+type ProductSearchCriteria struct{
+Search_name string 
+	Supplier_id int    
+	Min_price int   
+	Max_price int    
+}
+
+
+func GetProductsWithSearch(psc ProductSearchCriteria)([]model.Product,error)
+{
+	var products []model.Product
+	var err error
+	if psc == nil {
+		products, err = GetAllProducts ()
+		return products, err
+	}
+
+sql := "select * from product where 1=1"
+args := []any{}
+if psc.Search_name != ""{
+	sql += fmt.Sprintf(" and name like \%%s\%",psc.Search_name)
+	args = append(args, psc.Search_name)
+}
+if psc.Supplier_id != 0{
+	sql += fmt.Sprintf(" and supplier_id = %d",psc.Supplier_id)
+	args = append(args, psc.Supplier_id)
+}
+if psc.Min_price != 0{
+	sql += fmt.Sprintf(" and Min_price = %d",psc.Min_price)
+	args = append(args, psc.Min_price)
+}
+if psc.Max_price != 0{
+	sql += fmt.Sprintf(" and Max_price = %d",psc.Max_price)
+	args = append(args, psc.Max_price)
+	
+}
+//To do run query
+
+}

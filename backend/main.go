@@ -69,8 +69,40 @@ func main() {
 	http.Handle("/api/auth/me", setHandlerFunc(http.HandlerFunc(handler.HandleGetUser)))
 
 	// Catalog
-	http.Handle("/api/products", http.HandlerFunc(handleProducts))
-	// TODO: rest of Catalog
+	// GET ALL PRODUCTS
+	// GET /api/products
+	http.Handle(
+		"/api/products",
+		setHandlerFunc(http.HandlerFunc(handler.HandleGetProducts)),
+	)
+
+	// GET PRODUCT BY ID
+	// GET /api/products/get?id=1
+	http.Handle(
+		"/api/products/get",
+		setHandlerFunc(http.HandlerFunc(handler.HandleGetProductById)),
+	)
+
+	// CREATE PRODUCT
+	// POST /api/products/create
+	http.Handle(
+		"/api/products/create",
+		setHandlerFunc(http.HandlerFunc(handler.HandleCreateProduct)),
+	)
+
+	// UPDATE PRODUCT
+	// PUT /api/products/update?id=1
+	http.Handle(
+		"/api/products/update",
+		setHandlerFunc(http.HandlerFunc(handler.HandleUpdateProduct)),
+	)
+
+	// DELETE PRODUCT
+	// DELETE /api/products/delete?id=1
+	http.Handle(
+		"/api/products/delete",
+		setHandlerFunc(http.HandlerFunc(handler.HandleDeleteProduct)),
+	)
 
 	// Cart
 	// TODO: rest of Cart
@@ -131,3 +163,8 @@ func setHandlerFunc(h http.Handler) http.Handler {
 		)
 	})
 }
+
+//Endpoints for Catalog/ Product 
+
+
+
