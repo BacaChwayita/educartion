@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/P-SEN371-Group-3/educartion/config"
@@ -106,6 +107,10 @@ func main() {
 
 	// Cart
 	// TODO: rest of Cart
+	http.Handle("/api/cart", setHandlerFunc(http.HandlerFunc(handler.HandleCart)))
+	http.Handle("/api/cart/items", setHandlerFunc(http.HandlerFunc(handler.HandleCartItems)))
+	http.Handle("/api/cart/item/{productId}", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
+	http.Handle("/api/cart/item/{productId}", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
 
 	// Orders
 	http.Handle("/api/orders/{id}", setHandlerFunc(http.HandlerFunc(handler.HandleGetOrderByID)))
@@ -131,7 +136,11 @@ func setHandlerFunc(h http.Handler) http.Handler {
 			reqID = uuid.New().String()
 		}
 
-		ctx := context.WithValue(r.Context(), handler.RequestIDKey, reqID)
+		authKey := strings.TrimSpace(r.Header.Get("Authorization"))
+
+		var ctx context.Context
+		ctx = context.WithValue(r.Context(), handler.RequestIDKey, reqID)
+		ctx = context.WithValue(r.Context(), handler.AuthorisationKey, authKey)
 
 		start := time.Now()
 

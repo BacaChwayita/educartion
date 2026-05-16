@@ -94,3 +94,12 @@ type ProductRequest struct {
 type ProductResponse struct {
 	Products []Product
 }
+
+type AddCartItemRequest struct {
+	ProductID int `json:"product_id"`
+	Quantity  int `json:"quantity"`
+}
+
+type UpdateCartItemRequest struct {
+	Quantity int `json:"quantity"`
+}
