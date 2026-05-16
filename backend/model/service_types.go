@@ -38,3 +38,17 @@ type LogoutRequest struct {
 type GetUserRequest struct {
 	Token string `json:"token"`
 }
+
+type ProductRequest struct{
+    Search_name string `json:"search_name"`
+	Supplier_id int    `json:"supplier_id"`
+	Min_price int    `json:"min_price"`
+	Max_price int    `json:"max_price"`
+	
+}
+
+type ProductResponse struct{
+	Products [] Product
+    
+}
+
