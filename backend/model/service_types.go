@@ -83,3 +83,12 @@ type Supplier_details struct {
 	Supplier_id int    `json:"supplier_id"`
 	Name        string `json:"name"`
 }
+
+type AddCartItemRequest struct {
+	ProductID int `json:"product_id"`
+	Quantity  int `json:"quantity"`
+}
+
+type UpdateCartItemRequest struct {
+	Quantity int `json:"quantity"`
+}

@@ -74,6 +74,10 @@ func main() {
 
 	// Cart
 	// TODO: rest of Cart
+	http.Handle("/api/cart", setHandlerFunc(http.HandlerFunc(handler.HandleCart)))
+	http.Handle("/api/cart/items", setHandlerFunc(http.HandlerFunc(handler.HandleCartItems)))
+	http.Handle("/api/cart/item/{productId}", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
+	http.Handle("/api/cart/item/{productId}", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
 
 	// Orders
 	http.Handle("/api/orders/{id}", setHandlerFunc(http.HandlerFunc(handler.HandleGetOrderByID)))
