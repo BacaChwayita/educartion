@@ -8,6 +8,7 @@ import (
 // Possible errors that will be written through WriteError
 const (
 	ErrDecodeHTTPRequestBody string = "Failed to decode HTTP request body"
+	ErrNoAuthorizationKey    string = "No valid authorization key found"
 )
 
 // WriteJSON writes a response back to the requester.

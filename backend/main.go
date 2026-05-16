@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/P-SEN371-Group-3/educartion/config"
@@ -99,7 +100,11 @@ func setHandlerFunc(h http.Handler) http.Handler {
 			reqID = uuid.New().String()
 		}
 
-		ctx := context.WithValue(r.Context(), handler.RequestIDKey, reqID)
+		authKey := strings.TrimSpace(r.Header.Get("Authorization"))
+
+		var ctx context.Context
+		ctx = context.WithValue(r.Context(), handler.RequestIDKey, reqID)
+		ctx = context.WithValue(r.Context(), handler.AuthorisationKey, authKey)
 
 		start := time.Now()
 
