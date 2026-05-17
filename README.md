@@ -29,9 +29,9 @@
 
 ### Frontend
 - [ ] 0. High Fidelity Wireframes + Prototype
-- [ ] 1. Install Node runtime, Install Next.js, Install React.js?
-- [ ] 2. Run create command
-- [ ] 3. Folder Setup
+- [x] 1. Install Node runtime, Install Next.js, Install React.js?
+- [x] 2. Run create command
+- [x] 3. Folder Setup
 
 ```
 app/                        # url traveling
