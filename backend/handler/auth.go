@@ -25,9 +25,10 @@ func HandleRegister(w http.ResponseWriter, req *http.Request) {
 	}
 
 	err = auth.Register(rr)
-	if errors.Is(err, auth.ErrDBInsert) {
-		rpc.WriteError(w, 500, "Database error occured while registering user")
-	} else if err != nil {
+	if err != nil {
+		if errors.Is(err, auth.ErrDBInsert) {
+			rpc.WriteError(w, 500, "Database error occured while registering user")
+		}
 		rpc.WriteError(w, 500, "Server error occured while registering user")
 	}
 
@@ -51,12 +52,13 @@ func HandleLogin(w http.ResponseWriter, req *http.Request) {
 
 	tokenString, acc, err := auth.LoginWithEmail(lr)
 	if err != nil && !errors.Is(err, auth.ErrFailedToCreateJWT) {
+		reqID, _ := req.Context().Value(RequestIDKey).(string)
 		cfg.Logs.Logger.Error(
 			"Failed to login newly registered user",
 			slog.String("error", err.Error()),
 			slog.String("func", "HandleRegister"),
 			slog.String("timestamp", time.Now().GoString()),
-			slog.String("x-request-id", req.Context().Value(RequestIDKey).(string)),
+			slog.String("x-request-id", reqID),
 		)
 		switch {
 		case errors.Is(err, auth.ErrAccountInactive):
@@ -124,11 +126,12 @@ func HandleGetUser(w http.ResponseWriter, req *http.Request) {
 func logErrDecodeBody(func_name string, req *http.Request, err error) {
 	cfg := config.GetConfig()
 
+	reqID, _ := req.Context().Value(RequestIDKey).(string)
 	cfg.Logs.Logger.Error(
 		"Failed to decode http request body",
 		slog.String("error", err.Error()),
 		slog.String("func", func_name),
 		slog.String("timestamp", time.Now().GoString()),
-		slog.String("x-request-id", req.Context().Value(RequestIDKey).(string)),
+		slog.String("x-request-id", reqID),
 	)
 }

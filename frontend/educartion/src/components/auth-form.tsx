@@ -8,7 +8,7 @@ import {
   type LoginResponse,
   type RegisterClientRequest,
 } from "@/lib/auth-contract";
-import { readBackendError } from "@/lib/auth-errors";
+import { handleLogin, handleRegister } from "@/controllers/authController";
 
 type AuthMode = "login" | "register";
 
@@ -41,65 +41,27 @@ export function AuthForm({ mode }: AuthFormProps) {
   const description = isLogin
     ? "Use your email and password to return to your account."
     : "Register once and use the same account for the whole platform.";
-  const panelHeadline = isLogin
-    ? "Welcome back to educartion"
-    : "Start your educartion workspace";
-  const panelCopy = isLogin
-    ? "Pick up where you left off and keep your session alive when you choose remember me."
-    : "Set up your profile in a single pass. The backend expects the same snake_case payload fields it already uses.";
 
-  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
     setFormState(initialValidationState);
 
     if (isLogin) {
-      const payload: LoginClientRequest = {
-        email: email.trim(),
-        password,
-        rememberMe,
-      };
-
-      if (!payload.email || !payload.password) {
-        setFormState({
-          error: "Email and password are required.",
-          status: null,
-        });
-        return;
-      }
+      const payload: LoginClientRequest = { email: email.trim(), password, rememberMe };
 
       setIsSubmitting(true);
 
-      try {
-        const response = await fetch("/api/auth/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-        });
+      const res = await handleLogin(payload);
 
-        if (!response.ok) {
-          setFormState({
-            error: await readBackendError(response),
-            status: null,
-          });
-          return;
-        }
-
-        const data = (await response.json()) as LoginResponse;
-        setFormState({
-          error: null,
-          status: `Signed in as ${data.full_name} (${data.role}).`,
-        });
-      } catch {
-        setFormState({
-          error: "Unable to reach the login endpoint right now.",
-          status: null,
-        });
-      } finally {
+      if (!res.ok) {
+        setFormState({ error: res.error ?? "Login failed.", status: null });
         setIsSubmitting(false);
+        return;
       }
 
+      const data = res.data as LoginResponse | undefined;
+      setFormState({ error: null, status: data ? `Signed in as ${data.full_name} (${data.role}).` : "Signed in." });
+      setIsSubmitting(false);
       return;
     }
 
@@ -130,90 +92,29 @@ export function AuthForm({ mode }: AuthFormProps) {
 
     setIsSubmitting(true);
 
-    try {
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!response.ok) {
-        setFormState({
-          error: await readBackendError(response),
-          status: null,
-        });
-        return;
-      }
-
-      setFullName("");
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setRememberMe(false);
-      setFormState({
-        error: null,
-        status: "Account created. You can sign in now.",
-      });
-      router.push("/login");
-    } catch {
-      setFormState({
-        error: "Unable to reach the register endpoint right now.",
-        status: null,
-      });
-    } finally {
+    const res = await handleRegister(payload);
+    if (!res.ok) {
+      setFormState({ error: res.error ?? "Register failed.", status: null });
       setIsSubmitting(false);
+      return;
     }
+
+    setFullName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setRememberMe(false);
+    setFormState({ error: null, status: "Account created. You can sign in now." });
+    setIsSubmitting(false);
+    router.push("/login");
   }
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.2),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.18),_transparent_28%),linear-gradient(180deg,#060816_0%,#0b1020_100%)] px-6 py-10 text-slate-100 sm:px-8 lg:px-10">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:28px_28px] opacity-20" />
-      <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-6xl items-center">
-        <div className="grid w-full gap-8 rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl lg:grid-cols-[1.1fr_0.9fr] lg:p-8">
-          <aside className="flex flex-col justify-between rounded-[1.5rem] border border-white/10 bg-slate-950/55 p-6">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-3 rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-2 text-sm font-medium text-amber-200">
-                <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
-                educartion auth
-              </div>
-              <div className="space-y-4">
-                <p className="text-sm uppercase tracking-[0.35em] text-slate-400">
-                  Secure access
-                </p>
-                <h1 className="max-w-xl text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-                  {panelHeadline}
-                </h1>
-                <p className="max-w-xl text-base leading-7 text-slate-300">
-                  {panelCopy}
-                </p>
-              </div>
-            </div>
-
-            <div className="mt-10 grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
-                  Endpoint
-                </p>
-                <p className="mt-2 text-sm text-slate-100">/api/auth/{isLogin ? "login" : "register"}</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
-                  Payload
-                </p>
-                <p className="mt-2 text-sm text-slate-100">snake_case server contract</p>
-              </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs uppercase tracking-[0.25em] text-slate-400">
-                  Session
-                </p>
-                <p className="mt-2 text-sm text-slate-100">remember me cookie support</p>
-              </div>
-            </div>
-          </aside>
-
-          <div className="rounded-[1.5rem] border border-white/10 bg-slate-950/80 p-6 sm:p-8">
+    <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.2),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.18),transparent_28%),linear-gradient(180deg,#060816_0%,#0b1020_100%)] px-6 py-10 text-slate-100 sm:px-8 lg:px-10">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[28px_28px] opacity-20" />
+      <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] w-full max-w-xl items-center justify-center">
+        <div className="w-full rounded-4xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl lg:p-8">
+          <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-6 sm:p-8">
             <div className="mb-8 space-y-3">
               <p className="text-sm font-medium uppercase tracking-[0.3em] text-amber-200">
                 {isLogin ? "Login" : "Register"}

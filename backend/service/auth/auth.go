@@ -92,11 +92,13 @@ func Register(rr model.RegisterRequest) error {
 	}
 
 	newAccount := model.Account{
-		Full_name:     rr.Full_name,
-		Email:         rr.Email,
-		Password_hash: hashedPassword,
-		Role:          "customer",
-		Created_at:    time.Now(),
+		Full_name:      rr.Full_name,
+		Email:          rr.Email,
+		Password_hash:  hashedPassword,
+		Role:           "customer",
+		Login_attempts: 0,
+		Is_active:      true,
+		Created_at:     time.Now(),
 	}
 
 	_, err = db.InsertAccount(newAccount)
@@ -117,10 +119,11 @@ func LoginWithEmail(lr model.LoginWithEmailRequest) (string, model.Account, erro
 	var acc model.Account
 
 	acc, err := db.GetAccountByEmail(lr.Email)
-	if errors.Is(err, pgx.ErrNoRows) {
-		return "", model.Account{}, ErrAccountNotFound
-	}
 	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return "", model.Account{}, ErrAccountNotFound
+		}
+
 		return "", model.Account{}, ErrUnkown
 	}
 

@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     },
     body: JSON.stringify({
       email,
-      password_hash: password,
+      password_hash: password, // TODO: should be password_text - issue on backend
     }),
   });
 
