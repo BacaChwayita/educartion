@@ -1,8 +1,10 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/P-SEN371-Group-3/educartion/config"
@@ -261,3 +263,68 @@ func DeleteProductById(product_id int) (int64, error) {
 	return result.RowsAffected(), nil
 }
 
+func SearchProduct(products []model.Product, query string) ([]model.Product, error) {
+	if query == "" {
+		return nil, errors.New("search query cannot be empty")
+	}
+
+	var results []model.Product
+
+	for _, p := range products {
+		// simple case-insensitive contains search
+		if containsIgnoreCase(p.Name, query) {
+			results = append(results, p)
+		}
+	}
+
+	if len(results) == 0 {
+		return nil, errors.New("no products found")
+	}
+
+	return results, nil
+}
+
+func containsIgnoreCase(input string, query string) bool {
+	return strings.Contains(strings.ToLower(input), strings.ToLower(query))
+}
+
+type ProductSearchCriteria struct {
+	Search_name string
+	Supplier_id int
+	Min_price   int
+	Max_price   int
+}
+
+func GetProductsWithSearch(psc ProductSearchCriteria) ([]model.Product, error) {
+	products, err := GetAllProducts()
+	if err != nil {
+		return nil, err
+	}
+
+	if psc.Search_name == "" && psc.Supplier_id == 0 && psc.Min_price == 0 && psc.Max_price == 0 {
+		return products, nil
+	}
+
+	results := make([]model.Product, 0, len(products))
+	for _, p := range products {
+		if psc.Search_name != "" && !containsIgnoreCase(p.Name, psc.Search_name) {
+			continue
+		}
+		if psc.Supplier_id != 0 && p.Supplier_id != psc.Supplier_id {
+			continue
+		}
+		if psc.Min_price != 0 && p.Price < psc.Min_price {
+			continue
+		}
+		if psc.Max_price != 0 && p.Price > psc.Max_price {
+			continue
+		}
+		results = append(results, p)
+	}
+
+	if len(results) == 0 {
+		return nil, errors.New("no products found")
+	}
+
+	return results, nil
+}

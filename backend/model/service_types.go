@@ -84,6 +84,17 @@ type Supplier_details struct {
 	Name        string `json:"name"`
 }
 
+type ProductRequest struct {
+	Search_name string `json:"search_name"`
+	Supplier_id int    `json:"supplier_id"`
+	Min_price   int    `json:"min_price"`
+	Max_price   int    `json:"max_price"`
+}
+
+type ProductResponse struct {
+	Products []Product
+}
+
 type AddCartItemRequest struct {
 	ProductID int `json:"product_id"`
 	Quantity  int `json:"quantity"`
