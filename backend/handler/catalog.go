@@ -1,31 +1,31 @@
+package handler
+
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
 	"strconv"
-	"time"
 
-	"github.com/P-SEN371-Group-3/educartion/config"
 	"github.com/P-SEN371-Group-3/educartion/model"
 	"github.com/P-SEN371-Group-3/educartion/rpc"
-	"github.com/P-SEN371-Group-3/educartion/service/catalog"
+	"github.com/P-SEN371-Group-3/educartion/service/db"
 )
-//When a user clicks on catalog but have not searched 
+
+// When a user clicks on catalog but have not searched.
 func HandleGetProducts(w http.ResponseWriter, req *http.Request) {
 
 	var pr model.ProductRequest
 	err := json.NewDecoder(req.Body).Decode(&pr)
-    if err != nil{
-    rpc.WriteError(
+	if err != nil {
+		rpc.WriteError(
 			w,
 			http.StatusBadRequest,
 			rpc.ErrDecodeHTTPRequestBody,
 		)
-    return
+		return
 
 	}
 
-	products, err := catalog.GetProducts()
+	products, err := db.GetAllProducts()
 
 	if err != nil {
 
@@ -43,8 +43,6 @@ func HandleGetProducts(w http.ResponseWriter, req *http.Request) {
 		http.StatusOK,
 		products,
 	)
-
-	
 }
 func HandleGetProductById(w http.ResponseWriter, req *http.Request) {
 
@@ -63,7 +61,7 @@ func HandleGetProductById(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	product, err := catalog.GetProductById(productID)
+	product, err := db.GetProductById(productID)
 
 	if err != nil {
 
@@ -105,7 +103,7 @@ func HandleCreateProduct(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	product, err := catalog.CreateProduct(newProduct)
+	product, err := db.InsertProduct(newProduct)
 
 	if err != nil {
 
@@ -164,7 +162,7 @@ func HandleUpdateProduct(w http.ResponseWriter, req *http.Request) {
 
 	updatedProduct.Product_id = productID
 
-	rowCount, err := catalog.UpdateProduct(updatedProduct)
+	rowCount, err := db.UpdateProduct(updatedProduct)
 
 	if err != nil {
 
@@ -202,7 +200,7 @@ func HandleDeleteProduct(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	rowCount, err := catalog.DeleteProduct(productID)
+	rowCount, err := db.DeleteProductById(productID)
 
 	if err != nil {
 

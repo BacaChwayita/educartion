@@ -1,8 +1,10 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/P-SEN371-Group-3/educartion/config"
@@ -277,47 +279,52 @@ func SearchProduct(products []model.Product, query string) ([]model.Product, err
 
 	if len(results) == 0 {
 		return nil, errors.New("no products found")
-	} 
+	}
 
 	return results, nil
 }
 
-type ProductSearchCriteria struct{
-Search_name string 
-	Supplier_id int    
-	Min_price int   
-	Max_price int    
+func containsIgnoreCase(input string, query string) bool {
+	return strings.Contains(strings.ToLower(input), strings.ToLower(query))
 }
 
+type ProductSearchCriteria struct {
+	Search_name string
+	Supplier_id int
+	Min_price   int
+	Max_price   int
+}
 
-func GetProductsWithSearch(psc ProductSearchCriteria)([]model.Product,error)
-{
-	var products []model.Product
-	var err error
-	if psc == nil {
-		products, err = GetAllProducts ()
-		return products, err
+func GetProductsWithSearch(psc ProductSearchCriteria) ([]model.Product, error) {
+	products, err := GetAllProducts()
+	if err != nil {
+		return nil, err
 	}
 
-sql := "select * from product where 1=1"
-args := []any{}
-if psc.Search_name != ""{
-	sql += fmt.Sprintf(" and name like \%%s\%",psc.Search_name)
-	args = append(args, psc.Search_name)
-}
-if psc.Supplier_id != 0{
-	sql += fmt.Sprintf(" and supplier_id = %d",psc.Supplier_id)
-	args = append(args, psc.Supplier_id)
-}
-if psc.Min_price != 0{
-	sql += fmt.Sprintf(" and Min_price = %d",psc.Min_price)
-	args = append(args, psc.Min_price)
-}
-if psc.Max_price != 0{
-	sql += fmt.Sprintf(" and Max_price = %d",psc.Max_price)
-	args = append(args, psc.Max_price)
-	
-}
-//To do run query
+	if psc.Search_name == "" && psc.Supplier_id == 0 && psc.Min_price == 0 && psc.Max_price == 0 {
+		return products, nil
+	}
 
+	results := make([]model.Product, 0, len(products))
+	for _, p := range products {
+		if psc.Search_name != "" && !containsIgnoreCase(p.Name, psc.Search_name) {
+			continue
+		}
+		if psc.Supplier_id != 0 && p.Supplier_id != psc.Supplier_id {
+			continue
+		}
+		if psc.Min_price != 0 && p.Price < psc.Min_price {
+			continue
+		}
+		if psc.Max_price != 0 && p.Price > psc.Max_price {
+			continue
+		}
+		results = append(results, p)
+	}
+
+	if len(results) == 0 {
+		return nil, errors.New("no products found")
+	}
+
+	return results, nil
 }
