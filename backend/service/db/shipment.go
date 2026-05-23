@@ -160,6 +160,42 @@ func GetShipmentById(shipment_id int) (model.Shipment, error) {
 	return s, nil
 }
 
+func GetShipmentByOrderId(order_id int) (model.Shipment, error) {
+	cfg := config.GetConfig()
+
+	sql := `SELECT ` + shipmentColumns +
+		`
+			FROM shipment
+			WHERE order_id = $1
+		`
+
+	var s model.Shipment
+
+	row := cfg.DBConnection.Pool.QueryRow(
+		cfg.DBConnection.Ctx,
+		sql,
+		order_id,
+	)
+
+	s, err := scanShipment(row)
+
+	if err == pgx.ErrNoRows {
+		return model.Shipment{}, err
+	}
+
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db select",
+			slog.String("error", err.Error()),
+			slog.String("func", "GetShipmentByOrderId"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("order_id", order_id),
+		)
+		return model.Shipment{}, fmt.Errorf("Error on db select: %w", err)
+	}
+
+	return s, nil
+}
 func UpdateShipment(s model.Shipment) (int64, error) {
 	cfg := config.GetConfig()
 
