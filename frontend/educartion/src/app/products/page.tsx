@@ -1,56 +1,28 @@
-type Product = {
-  id?: string;
-  name?: string;
-  description?: string;
-  price?: number;
-  [key: string]: unknown;
-};
-
-async function getProducts() {
-  const response = await fetch("/api/products", {
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Unable to load products: ${response.status}`);
-  }
-
-  return response.json();
-}
-
-function normalizeProducts(payload: unknown): Product[] {
-  if (!payload) {
-    return [];
-  }
-
-  if (Array.isArray(payload)) {
-    return payload;
-  }
-
-  if (typeof payload === "object") {
-    return Object.values(payload as Record<string, Product>);
-  }
-
-  return [];
-}
+import { handleLoadProducts } from "@/controllers/productController";
+import type { Product } from "@/lib/product-contract";
 
 export default async function ProductsPage() {
-  const data = await getProducts();
-  const products = normalizeProducts((data as { products?: unknown }).products ?? data);
+  const result = await handleLoadProducts();
+  const products: Product[] = result.ok ? result.data ?? [] : [];
 
   return (
     <main className="min-h-screen bg-zinc-50 text-zinc-950 px-6 py-10">
       <div className="mx-auto max-w-6xl">
         <h1 className="text-4xl font-semibold tracking-tight">Products</h1>
         <p className="mt-2 text-sm text-zinc-600">
-          Loaded from <code className="rounded bg-white px-2 py-1 text-xs font-mono">/api/products</code>.
+          Loaded from the backend API.
         </p>
 
-        {products.length === 0 ? (
+        {!result.ok ? (
+          <div className="mt-10 rounded-3xl border border-dashed border-zinc-300 bg-white p-10 text-center shadow-sm">
+            <p className="text-lg font-medium text-red-700">Failed to load products</p>
+            <p className="mt-2 text-sm text-red-600">{result.error}</p>
+          </div>
+        ) : products.length === 0 ? (
           <div className="mt-10 rounded-3xl border border-dashed border-zinc-300 bg-white p-10 text-center shadow-sm">
             <p className="text-lg font-medium text-zinc-700">No products were found.</p>
             <p className="mt-2 text-sm text-zinc-500">
-              Make sure the backend is running and that <code>/api/products</code> returns a products object.
+              Make sure the backend is running and that the <code className="rounded bg-white px-2 py-1 text-xs font-mono">/api/products</code> endpoint returns products.
             </p>
           </div>
         ) : (
