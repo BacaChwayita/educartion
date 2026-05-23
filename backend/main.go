@@ -113,6 +113,7 @@ func main() {
 	http.Handle("/api/cart/item/{productId}", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
 
 	// Orders
+	http.Handle("/api/orders/", setHandlerFunc(http.HandlerFunc(handler.HandleGetOrders)))
 	http.Handle("/api/orders/{id}", setHandlerFunc(http.HandlerFunc(handler.HandleGetOrderByID)))
 	// TODO: rest of Orders
 

@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -9,6 +10,25 @@ import (
 	"github.com/P-SEN371-Group-3/educartion/service/db"
 	"github.com/jackc/pgx/v5"
 )
+
+func HandleGetOrders(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	orders, err := db.GetAllOrders()
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			rpc.WriteJSON(w, http.StatusOK, []model.Orders{})
+			return
+		}
+		rpc.WriteError(w, http.StatusInternalServerError, "Error retrieving orders")
+		return
+	}
+
+	rpc.WriteJSON(w, http.StatusOK, orders)
+}
 
 func HandleGetOrderByID(w http.ResponseWriter, req *http.Request) {
 
@@ -37,7 +57,7 @@ func HandleGetOrderByID(w http.ResponseWriter, req *http.Request) {
 
 	response.Order_id = order.Order_id
 	response.Order_number = order.Order_number
-	response.Status = order.Order_number
+	response.Status = order.Status
 	response.Subtotal_amount = order.Subtotal_amount
 	response.Discount_amount = order.Discount_amount
 	response.Total_amount = order.Total_amount
