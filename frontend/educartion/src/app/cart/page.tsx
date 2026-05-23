@@ -84,117 +84,119 @@ export default function CartPage() {
   const total = subtotal + delivery;
 
   return (
-    <main style={{ width: "100%", padding: "24px 20px", display: "grid", justifyItems: "center" }}>
-      <div style={{ width: "100%", maxWidth: 1200, display: "grid", gap: 24 }}>
-        <header>
-          <h1 style={{ margin: 0, fontSize: 32 }}>Shopping Cart</h1>
-          <p style={{ margin: "8px 0 0", color: "#555" }}>Review your items before you checkout.</p>
-        </header>
-
-        {items.length === 0 ? (
-          <section style={{ padding: 28, border: "1px solid #e5e7eb", borderRadius: 16, background: "white", textAlign: "center" }}>
-            <p style={{ margin: 0, fontSize: 18, color: "#333" }}>Your cart is empty.</p>
-            <p style={{ margin: "12px 0 0", color: "#666" }}>Add products from the shop and return here to complete your order.</p>
-            <Link href="/" style={{ marginTop: 18, display: "inline-flex", padding: "12px 20px", borderRadius: 8, border: "none", background: "#0070f3", color: "white", textDecoration: "none" }}>
-              Browse products
-            </Link>
-          </section>
-        ) : (
-          <section style={{ display: "grid", gap: 24, gridTemplateColumns: "1.7fr 0.9fr" }}>
-            <div style={{ display: "grid", gap: 16 }}>
-              <div style={{ padding: 16, borderRadius: 16, border: "1px solid #e5e7eb", background: "white" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr auto", gap: 12, padding: "12px 0", fontSize: 14, fontWeight: 700, color: "#555" }}>
-                  <div>Product</div>
-                  <div style={{ textAlign: "right" }}>Price</div>
-                  <div style={{ textAlign: "center" }}>Quantity</div>
-                  <div style={{ textAlign: "right" }}>Total</div>
-                  <div />
-                </div>
-              </div>
-
-              {items.map((item) => (
-                <article key={item.id} style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr auto", gap: 12, padding: 18, borderRadius: 16, border: "1px solid #e5e7eb", background: "white", alignItems: "center" }}>
-                  <div style={{ display: "flex", gap: 14, alignItems: "center" }}>
-                    <div style={{ width: 100, height: 100, borderRadius: 16, overflow: "hidden", background: "#f3f4f6", flexShrink: 0 }}>
-                      <img src={item.image || "/images/product-placeholder.png"} alt={item.title} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                    </div>
-                    <div>
-                      <div style={{ fontWeight: 700, fontSize: 16 }}>{item.title}</div>
-                      {item.description && <div style={{ marginTop: 4, color: "#6b7280", fontSize: 13 }}>{item.description}</div>}
-                    </div>
-                  </div>
-
-                  <div style={{ textAlign: "right", fontWeight: 600 }}>{formatMoney(item.price)}</div>
-
-                  <div style={{ display: "inline-flex", justifyContent: "center", alignItems: "center", gap: 8, background: "white", borderRadius: 999, padding: "6px 10px" }}>
-                    <button
-                      type="button"
-                      onClick={() => updateItemQty(item.id, item.qty - 1)}
-                      style={{ width: 30, height: 30, borderRadius: 999, border: "1px solid #d1d5db", background: "white", cursor: "pointer", fontWeight: 700 }}
-                      aria-label={`Decrease quantity for ${item.title}`}
-                    >
-                      –
-                    </button>
-                    <span style={{ minWidth: 24, textAlign: "center", fontWeight: 700 }}>{item.qty}</span>
-                    <button
-                      type="button"
-                      onClick={() => updateItemQty(item.id, item.qty + 1)}
-                      style={{ width: 30, height: 30, borderRadius: 999, border: "1px solid #d1d5db", background: "white", cursor: "pointer", fontWeight: 700 }}
-                      aria-label={`Increase quantity for ${item.title}`}
-                    >
-                      +
-                    </button>
-                  </div>
-
-                  <div style={{ textAlign: "right", fontWeight: 700 }}>{formatMoney(item.price * item.qty)}</div>
-
-                  <button
-                    type="button"
-                    onClick={() => removeItem(item.id)}
-                    style={{ width: 40, height: 40, borderRadius: 12, border: "1px solid #e5e7eb", background: "white", cursor: "pointer", color: "#ef4444" }}
-                    aria-label={`Remove ${item.title} from cart`}
-                  >
-                    🗑️
-                  </button>
-                </article>
-              ))}
+    <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.2),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.18),transparent_28%),linear-gradient(180deg,#060816_0%,#0b1020_100%)] px-6 py-10 text-slate-100 sm:px-8 lg:px-10">
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[28px_28px] opacity-20" />
+      <div className="relative mx-auto w-full max-w-5xl">
+        <div className="w-full rounded-4xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl lg:p-8">
+          <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-6 sm:p-8">
+            <div className="mb-8 space-y-2">
+              <p className="text-sm font-medium uppercase tracking-[0.3em] text-amber-200">
+                Shopping
+              </p>
+              <h2 className="text-3xl font-semibold tracking-tight text-white">Shopping Cart</h2>
+              <p className="text-sm leading-6 text-slate-300">Review your items before you checkout.</p>
             </div>
 
-            <aside style={{ display: "grid", gap: 16, alignSelf: "start" }}>
-              <div style={{ padding: 20, borderRadius: 18, border: "1px solid #e5e7eb", background: "white" }}>
-                <h2 style={{ margin: 0, marginBottom: 14, fontSize: 20 }}>Order summary</h2>
-                <div style={{ display: "grid", gap: 12 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", color: "#4b5563" }}>
-                    <span>Subtotal</span>
-                    <span>{formatMoney(subtotal)}</span>
+            {items.length === 0 ? (
+              <div className="rounded-2xl border border-white/10 bg-white/5 px-6 py-8 text-center">
+                <p className="text-base text-slate-300 mb-3">Your cart is empty.</p>
+                <p className="text-sm text-slate-400 mb-6">Add products from the shop and return here to complete your order.</p>
+                <Link
+                  href="/"
+                  className="inline-flex items-center justify-center rounded-2xl bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
+                >
+                  Browse products
+                </Link>
+              </div>
+            ) : (
+              <div className="grid gap-6 lg:grid-cols-3">
+                <div className="lg:col-span-2 space-y-4">
+                  {items.map((item) => (
+                    <div
+                      key={item.id}
+                      className="rounded-2xl border border-white/10 bg-white/5 p-4 flex gap-4 items-start"
+                    >
+                      <div className="w-24 h-24 rounded-lg overflow-hidden flex-shrink-0 bg-slate-900/50">
+                        <img
+                          src={item.image || "/images/product-placeholder.png"}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-sm font-semibold text-white truncate">{item.title}</h3>
+                        {item.description && (
+                          <p className="text-xs text-slate-400 line-clamp-2 mt-1">{item.description}</p>
+                        )}
+                        <p className="text-amber-400 font-semibold mt-2">{formatMoney(item.price)}</p>
+                      </div>
+                      <div className="flex items-center gap-2 bg-slate-900/50 rounded-lg p-1">
+                        <button
+                          type="button"
+                          onClick={() => updateItemQty(item.id, item.qty - 1)}
+                          className="w-6 h-6 rounded text-slate-200 hover:bg-white/10 transition"
+                        >
+                          −
+                        </button>
+                        <span className="w-6 text-center text-xs font-semibold text-slate-200">{item.qty}</span>
+                        <button
+                          type="button"
+                          onClick={() => updateItemQty(item.id, item.qty + 1)}
+                          className="w-6 h-6 rounded text-slate-200 hover:bg-white/10 transition"
+                        >
+                          +
+                        </button>
+                      </div>
+                      <p className="text-amber-400 font-semibold text-sm text-right min-w-[60px]">
+                        {formatMoney(item.price * item.qty)}
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => removeItem(item.id)}
+                        className="text-rose-400 hover:text-rose-300 transition text-sm font-semibold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="space-y-4">
+                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-5">
+                    <h3 className="text-sm font-semibold text-white mb-4">Order Summary</h3>
+                    <div className="space-y-3 text-sm">
+                      <div className="flex justify-between text-slate-300">
+                        <span>Subtotal</span>
+                        <span>{formatMoney(subtotal)}</span>
+                      </div>
+                      <div className="flex justify-between text-slate-300">
+                        <span>Delivery fee</span>
+                        <span>{formatMoney(delivery)}</span>
+                      </div>
+                      <div className="border-t border-white/10 pt-3 flex justify-between font-semibold text-amber-400">
+                        <span>Total</span>
+                        <span>{formatMoney(total)}</span>
+                      </div>
+                    </div>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", color: "#4b5563" }}>
-                    <span>Delivery fee</span>
-                    <span>{formatMoney(delivery)}</span>
-                  </div>
-                  <div style={{ height: 1, background: "#e5e7eb", margin: "8px 0" }} />
-                  <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: 18 }}>
-                    <span>Total</span>
-                    <span>{formatMoney(total)}</span>
-                  </div>
+                  <Link
+                    href="/payment"
+                    className="w-full flex items-center justify-center rounded-2xl bg-amber-400 px-5 py-3.5 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
+                  >
+                    Proceed to checkout
+                  </Link>
+                  <Link
+                    href="/"
+                    className="w-full flex items-center justify-center rounded-2xl border border-white/15 px-5 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10"
+                  >
+                    Continue shopping
+                  </Link>
                 </div>
               </div>
-              <div style={{ padding: 20, borderRadius: 18, border: "1px solid #e5e7eb", background: "white" }}>
-                <p style={{ margin: 0, color: "#374151", fontSize: 14 }}>Need help? Your order summary updates automatically as you change quantity or remove items.</p>
-              </div>
-            </aside>
-          </section>
-        )}
-
-        <footer style={{ display: "flex", gap: 12, flexWrap: "wrap", justifyContent: "flex-end" }}>
-          <Link href="/" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "12px 18px", borderRadius: 8, border: "1px solid #ccc", background: "white", color: "#111", textDecoration: "none", minWidth: 170 }}>
-            Continue shopping
-          </Link>
-          <Link href="/payment" style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", padding: "12px 18px", borderRadius: 8, border: "none", background: "#0070f3", color: "white", textDecoration: "none", minWidth: 170 }}>
-            Proceed to checkout
-          </Link>
-        </footer>
+            )}
+          </div>
+        </div>
       </div>
-    </main>
+    </section>
   );
 }
