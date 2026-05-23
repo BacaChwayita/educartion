@@ -2,86 +2,45 @@
 
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-
-type CartItem = {
-  id: string | number;
-  title: string;
-  price: number;
-  image?: string;
-  description?: string;
-  qty: number;
-};
-
-const DELIVERY_FEE = 5.0;
+import type { CartItem } from "@/lib/cart-contract";
+import * as cartController from "@/controllers/cartController";
+import * as cartService from "@/services/cartService";
 
 const formatMoney = (value: number) => `$${value.toFixed(2)}`;
-
-const normalizeCart = (cart: any[]): CartItem[] => {
-  const merged: Record<string, CartItem> = {};
-
-  cart.forEach((item) => {
-    const id = String(item.id ?? item.title ?? Math.random());
-    const qty = Math.max(1, Number(item.qty || 1));
-    const price = Number(item.price || 0);
-
-    if (!merged[id]) {
-      merged[id] = {
-        id,
-        title: String(item.title || "Untitled product"),
-        price,
-        image: item.image || "/images/product-placeholder.png",
-        description: item.description,
-        qty,
-      };
-    } else {
-      merged[id].qty += qty;
-    }
-  });
-
-  return Object.values(merged);
-};
 
 export default function CartPage() {
   const [items, setItems] = useState<CartItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const stored = window.localStorage.getItem("cart") || "[]";
-    let parsed: any[] = [];
-
-    try {
-      parsed = JSON.parse(stored);
-    } catch {
-      parsed = [];
-    }
-
-    setItems(normalizeCart(parsed));
-    setIsLoaded(true);
+    const loadCart = async () => {
+      const loaded = await cartController.handleLoadCart();
+      setItems(loaded);
+      setIsLoaded(true);
+    };
+    loadCart();
   }, []);
 
   useEffect(() => {
     if (!isLoaded) return;
-    if (typeof window === "undefined") return;
-
-    window.localStorage.setItem("cart", JSON.stringify(items));
+    const saveCart = async () => {
+      await cartController.handleSaveCart(items);
+    };
+    saveCart();
   }, [items, isLoaded]);
 
-  const updateItemQty = (id: string | number, qty: number) => {
-    setItems((current) =>
-      current.map((item) =>
-        String(item.id) === String(id) ? { ...item, qty: Math.max(1, qty) } : item
-      )
-    );
+  const updateItemQty = async (id: string | number, qty: number) => {
+    const updated = await cartController.handleUpdateItemQuantity(items, { id, qty });
+    setItems(updated);
   };
 
-  const removeItem = (id: string | number) => {
-    setItems((current) => current.filter((item) => String(item.id) !== String(id)));
+  const removeItem = async (id: string | number) => {
+    const updated = await cartController.handleRemoveItem(items, { id });
+    setItems(updated);
   };
 
-  const subtotal = items.reduce((sum, item) => sum + item.price * item.qty, 0);
-  const delivery = items.length > 0 ? DELIVERY_FEE : 0;
-  const total = subtotal + delivery;
+  const summary = cartService.calculateCartSummary(items);
+  const { subtotal, deliveryFee: delivery, total } = summary;
 
   return (
     <main style={{ width: "100%", padding: "24px 20px", display: "grid", justifyItems: "center" }}>

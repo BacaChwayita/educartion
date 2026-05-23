@@ -15,11 +15,11 @@ export async function readBackendError(response: Response): Promise<string> {
     }
 
     if (parsed && typeof parsed === "object") {
-      if (typeof parsed.error === "string" && parsed.error.trim()) {
+      if ("error" in parsed && typeof parsed.error === "string" && parsed.error.trim()) {
         return parsed.error;
       }
 
-      if (typeof parsed.message === "string" && parsed.message.trim()) {
+      if ("message" in parsed && typeof parsed.message === "string" && parsed.message.trim()) {
         return parsed.message;
       }
     }
