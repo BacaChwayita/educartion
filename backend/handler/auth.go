@@ -22,14 +22,17 @@ func HandleRegister(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		logErrDecodeBody("HandleRegister", req, err)
 		rpc.WriteError(w, http.StatusBadRequest, rpc.ErrDecodeHTTPRequestBody)
+		return
 	}
 
 	err = auth.Register(rr)
 	if err != nil {
 		if errors.Is(err, auth.ErrDBInsert) {
 			rpc.WriteError(w, 500, "Database error occured while registering user")
+			return
 		}
 		rpc.WriteError(w, 500, "Server error occured while registering user")
+		return
 	}
 
 	rpc.WriteJSON(w, http.StatusCreated, nil)
@@ -63,15 +66,19 @@ func HandleLogin(w http.ResponseWriter, req *http.Request) {
 		switch {
 		case errors.Is(err, auth.ErrAccountInactive):
 			rpc.WriteError(w, http.StatusConflict, "Account inactive, must reactivate to login")
+			return
 
 		case errors.Is(err, auth.ErrPasswordIncorrect):
 			rpc.WriteError(w, http.StatusUnauthorized, "Password incorrect")
+			return
 
 		case errors.Is(err, auth.ErrAccountNotFound):
 			rpc.WriteError(w, http.StatusNotFound, "Account not found")
+			return
 
 		default:
 			rpc.WriteError(w, 500, "Server error occured during login process")
+			return
 		}
 	}
 
@@ -94,15 +101,18 @@ func HandleLogout(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		logErrDecodeBody("HandleLogout", req, err)
 		rpc.WriteError(w, http.StatusBadRequest, rpc.ErrDecodeHTTPRequestBody)
+		return
 	}
 
 	err = auth.Logout(lr)
 	if err == auth.ErrAccountLoginNotFound {
 		rpc.WriteError(w, http.StatusNotFound, "No record found in database")
+		return
 	}
 
 	if err != nil {
 		rpc.WriteError(w, 500, "Server error occured during logout process")
+		return
 	}
 
 	rpc.WriteJSON(w, http.StatusNoContent, nil)
@@ -115,6 +125,7 @@ func HandleGetUser(w http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		logErrDecodeBody("HandleGetUser", req, err)
 		rpc.WriteError(w, http.StatusBadRequest, rpc.ErrDecodeHTTPRequestBody)
+		return
 	}
 
 }
