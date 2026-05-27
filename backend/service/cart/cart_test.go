@@ -228,3 +228,13 @@ func TestAddCartItemInvalidQuantity(t *testing.T) {
 		t.Fatalf("Expected ErrInvalidQuantity, got %v", err)
 	}
 }
+
+func TestUpdateCartItemInvalidQuantity(t *testing.T) {
+	_, err := cart.UpdateCartItem("test-token", 1, 0)
+	if err == nil {
+		t.Fatal("Expected error for zero quantity, got nil")
+	}
+	if !errors.Is(err, cart.ErrInvalidQuantity) {
+		t.Fatalf("Expected ErrInvalidQuantity, got %v", err)
+	}
+}

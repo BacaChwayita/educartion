@@ -123,3 +123,35 @@ func TestGetPaymentByIDNotFound(t *testing.T) {
 		t.Fatalf("Expected ErrPaymentNotFound, got %v", err)
 	}
 }
+
+func TestGetPaymentByOrderID(t *testing.T) {
+	setupTestDBConfigAndConnection(t)
+
+	account, err := db.InsertAccount(newTestAccount())
+	if err != nil {
+		t.Fatalf("InsertAccount() failed: %s", err.Error())
+	}
+
+	order, err := db.InsertOrder(newTestOrder(account.Account_id))
+	if err != nil {
+		t.Fatalf("InsertOrder() failed: %s", err.Error())
+	}
+
+	recorded, err := paymentsvc.RecordPayment(paymentsvc.RecordPaymentRequest{
+		OrderID:       order.Order_id,
+		PaymentMethod: "card",
+		Amount:        1000,
+	})
+	if err != nil {
+		t.Fatalf("RecordPayment() failed: %s", err.Error())
+	}
+
+	loaded, err := paymentsvc.GetPaymentByOrderID(order.Order_id)
+	if err != nil {
+		t.Fatalf("GetPaymentByOrderID() failed: %s", err.Error())
+	}
+
+	if loaded.Payment_id != recorded.Payment_id {
+		t.Fatalf("Expected Payment_id %d, got %d", recorded.Payment_id, loaded.Payment_id)
+	}
+}
