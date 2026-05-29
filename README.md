@@ -2,6 +2,30 @@
 
 ## Introduction
 
+## Docker Build Instructions
+
+Use Compose from the repo root. These commands build and start everything:
+
+   `docker compose build`
+   `docker compose up -d`
+
+  To rebuild a single service:
+
+   `docker compose build api`
+   `docker compose build frontend`
+   `docker compose build postgres`
+
+  To stop:
+
+   `docker compose down`
+
+  If you need a full rebuild without cache:
+
+   `docker compose build --no-cache`
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
 ## File Structure
 
 ## Ongoing Team To-do List

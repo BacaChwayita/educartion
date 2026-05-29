@@ -65,76 +65,8 @@ frontend/educartion/
 
 ## Getting Started
 
-### Prerequisites
-
-- Node.js (v18 or higher)
-- npm, yarn, pnpm, or bun
-
 ### Setup
-
-1. Navigate to the frontend directory:
-
-```bash
-cd frontend/educartion
-```
-
-2. Install dependencies:
-
-```bash
-npm install
-# or
-yarn install
-# or
-pnpm install
-# or
-bun install
-```
-
-### Run Development Server
-
-Start the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-The page auto-updates as you edit the file. Start by modifying `src/app/page.tsx` to see changes in real-time.
-
-### Build for Production
-
-Create an optimized production build:
-
-```bash
-npm run build
-# or
-yarn build
-# or
-pnpm build
-# or
-bun build
-```
-
-### Run Production Build
-
-After building, you can start the production server:
-
-```bash
-npm run start
-# or
-yarn start
-# or
-pnpm start
-# or
-bun start
-```
+See docker setup instructions in the root `README.md` for setting up the development environment with Docker.
 
 ## Key Features
 
