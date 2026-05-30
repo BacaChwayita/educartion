@@ -1,5 +1,5 @@
-export const BACKEND_AUTH_BASE_URL =
-  process.env.BACKEND_URL ?? "http://localhost:8080";
+export const API_AUTH_BASE_URL =
+  process.env.API_URL ?? "http://localhost:8080";
 
 export interface LoginClientRequest {
   email: string;

@@ -1,5 +1,5 @@
 import type { Product, ProductsResponse } from "@/lib/product-contract";
-import { BACKEND_AUTH_BASE_URL } from "@/lib/auth-contract";
+import { API_AUTH_BASE_URL } from "@/lib/auth-contract";
 
 type ServiceResult<T> = {
   ok: boolean;
@@ -10,7 +10,7 @@ type ServiceResult<T> = {
 
 export async function getProducts(): Promise<ServiceResult<Product[]>> {
   try {
-    const backendUrl = `${BACKEND_AUTH_BASE_URL}/api/products`;
+    const backendUrl = `${API_AUTH_BASE_URL}/api/products`;
     const res = await fetch(backendUrl, {
       cache: "no-store",
     });

@@ -56,7 +56,7 @@ services:
     restart: unless-stopped
 
     environment:
-      API_URL: http://localhost:8080
+      API_URL: http://api:8080
 
     ports:
       - "3000:3000"
