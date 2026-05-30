@@ -62,6 +62,8 @@ export function AuthForm({ mode }: AuthFormProps) {
       const data = res.data as LoginResponse | undefined;
       setFormState({ error: null, status: data ? `Signed in as ${data.full_name} (${data.role}).` : "Signed in." });
       setIsSubmitting(false);
+      const destination = (data?.role ?? "").toLowerCase() === "admin" ? "/admin" : "/products";
+      router.push(destination);
       return;
     }
 

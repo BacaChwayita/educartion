@@ -1,5 +1,4 @@
 import type { Product, ProductsResponse } from "@/lib/product-contract";
-import { API_AUTH_BASE_URL } from "@/lib/auth-contract";
 
 type ServiceResult<T> = {
   ok: boolean;
@@ -10,15 +9,15 @@ type ServiceResult<T> = {
 
 export async function getProducts(): Promise<ServiceResult<Product[]>> {
   try {
-    const backendUrl = `${API_AUTH_BASE_URL}/api/products`;
-    const res = await fetch(backendUrl, {
+    const res = await fetch("/api/products", {
       cache: "no-store",
     });
 
     if (!res.ok) {
+      const body = (await res.json().catch(() => null)) as { error?: string } | null;
       return {
         ok: false,
-        error: `Unable to load products: ${res.status}`,
+        error: body?.error ?? `Unable to load products: ${res.status}`,
         status: res.status,
       };
     }

@@ -65,7 +65,7 @@ export default function CartPage() {
           <section style={{ padding: 28, border: "1px solid #e5e7eb", borderRadius: 16, background: "#fafafa", textAlign: "center" }}>
             <p style={{ margin: 0, fontSize: 18, color: "#333" }}>Your cart is empty.</p>
             <p style={{ margin: "12px 0 0", color: "#666" }}>Add products from the shop and return here to complete your order.</p>
-            <Link href="/" style={{ marginTop: 18, display: "inline-flex", padding: "12px 20px", borderRadius: 8, border: "none", background: "#0070f3", color: "white", textDecoration: "none" }}>
+            <Link href="/products" style={{ marginTop: 18, display: "inline-flex", padding: "12px 20px", borderRadius: 8, border: "none", background: "#0070f3", color: "white", textDecoration: "none" }}>
               Browse products
             </Link>
           </section>

@@ -102,7 +102,7 @@ export default function CartPage() {
                 <p className="text-base text-slate-300 mb-3">Your cart is empty.</p>
                 <p className="text-sm text-slate-400 mb-6">Add products from the shop and return here to complete your order.</p>
                 <Link
-                  href="/"
+                  href="/products"
                   className="inline-flex items-center justify-center rounded-2xl bg-amber-400 px-6 py-3 text-sm font-semibold text-slate-950 transition hover:bg-amber-300"
                 >
                   Browse products
