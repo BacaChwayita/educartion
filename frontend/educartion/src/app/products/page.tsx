@@ -173,26 +173,34 @@ export default function ProductsPage() {
               </div>
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {filteredProducts.map((product, index) => (
-                  <article
-                    key={product.id ?? index}
-                    className="group overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 transition hover:-translate-y-1 hover:bg-white/8 hover:border-amber-300/40 backdrop-blur-xl"
-                  >
-                    <h2 className="text-xl font-semibold text-white transition group-hover:text-amber-200">
-                      {product.name ?? "Unnamed product"}
-                    </h2>
-                    {product.description ? (
-                      <p className="mt-3 text-sm leading-6 text-slate-300">{product.description}</p>
-                    ) : (
-                      <p className="mt-3 text-sm leading-6 text-slate-500">No description available.</p>
-                    )}
-                    {typeof product.price === "number" ? (
-                      <p className="mt-5 text-lg font-semibold text-amber-300">
-                        {formatCurrency(product.price)}
-                      </p>
-                    ) : null}
-                  </article>
-                ))}
+                {filteredProducts.map((product, index) => {
+                  const rawId = product.id ?? product.product_id ?? product["product_id"] ?? index;
+                  const productId = typeof rawId === "string" || typeof rawId === "number" ? String(rawId) : String(index);
+
+                  return (
+                    <Link
+                      key={productId}
+                      href={`/products/${productId}`}
+                      className="group overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 transition hover:-translate-y-1 hover:bg-white/8 hover:border-amber-300/40 backdrop-blur-xl"
+                    >
+                      <article>
+                        <h2 className="text-xl font-semibold text-white transition group-hover:text-amber-200">
+                          {product.name ?? "Unnamed product"}
+                        </h2>
+                        {product.description ? (
+                          <p className="mt-3 text-sm leading-6 text-slate-300">{product.description}</p>
+                        ) : (
+                          <p className="mt-3 text-sm leading-6 text-slate-500">No description available.</p>
+                        )}
+                        {typeof product.price === "number" ? (
+                          <p className="mt-5 text-lg font-semibold text-amber-300">
+                            {formatCurrency(product.price)}
+                          </p>
+                        ) : null}
+                      </article>
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </div>
