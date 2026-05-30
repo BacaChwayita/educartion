@@ -42,7 +42,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ### Due Sat 30 May (M4)
 
 ##### Data
-- [ ] 0. Database Dummy Data
+- [x] 0. Database Dummy Data
 
 ##### Backend
 - [ ] Finish api endpoints
@@ -67,9 +67,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
     - [ ] Move categories to the left
     - [ ] Slider needs to be added (check other filters as well on products page)
 
-- [ ] 2. Link pages together
-    - [ ] Set start page to products page
-    - [ ] Link pages together in logical order
+- [x] 2. Link pages together
+    - [ ] Set start page to products page (currently goes to login page)
+    - [x] Link pages together in logical order
     - [ ] Check Navbar links and make sure they work
     - [ ] Add links to the footer as well
 
@@ -85,7 +85,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
     - [ ] Payments page
     - [ ] Order Details & Shipment page?
 
-### Due Sat 6 June (M5)
+### Due Fri 5 June (M5)
 
 - [ ] Confirm Backend Unit Tests are done
 - [ ] Frontend Unit Tests
@@ -96,9 +96,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [ ] HTTPS Certificates and ListenAndServe -> ListenAndServeTLS for HTTPS instead of HTTP - TODO for M6
 - [ ] Render Deployment
 - [ ] Finalise documentation
-
-### Other
-
 - [ ] Add Electron wrap-around for desktop app as additional requirements
 
 ## Dates 
