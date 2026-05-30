@@ -34,12 +34,13 @@ func init() {
 	cfg.DBConnection.Ctx = context.Background()
 
 	connectionString := fmt.Sprintf(
-		"postgresql://%s:%s@%s:%s/%s",
+		"postgresql://%s:%s@%s:%s/%s&sslmode=%s",
 		cfg.DB.Username,
 		cfg.DB.Password,
 		cfg.DB.Host,
 		cfg.DB.Port,
 		cfg.DB.Database,
+		cfg.DB.SSLMode,
 	)
 
 	cfg.DBConnection.Pool, err = pgxpool.New(cfg.DBConnection.Ctx, connectionString)
@@ -172,7 +173,4 @@ func setHandlerFunc(h http.Handler) http.Handler {
 	})
 }
 
-//Endpoints for Catalog/ Product 
-
-
-
+//Endpoints for Catalog/ Product

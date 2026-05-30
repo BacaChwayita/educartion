@@ -9,8 +9,8 @@ import (
 
 	"github.com/P-SEN371-Group-3/educartion/config"
 	"github.com/P-SEN371-Group-3/educartion/model"
-	shippingsvc "github.com/P-SEN371-Group-3/educartion/service/shipping"
 	"github.com/P-SEN371-Group-3/educartion/service/db"
+	shippingsvc "github.com/P-SEN371-Group-3/educartion/service/shipping"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 )
@@ -22,12 +22,13 @@ func setupTestDBConfigAndConnection(t *testing.T) {
 	cfg.DBConnection.Ctx = context.Background()
 
 	connectionString := fmt.Sprintf(
-		"postgresql://%s:%s@%s:%s/%s",
+		"postgresql://%s:%s@%s:%s/%s?sslmode=%s",
 		cfg.DB.Username,
 		cfg.DB.Password,
 		cfg.DB.Host,
 		cfg.DB.Port,
 		cfg.DB.Database,
+		cfg.DB.SSLMode,
 	)
 
 	var err error

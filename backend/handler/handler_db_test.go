@@ -25,12 +25,13 @@ func setupTestDBConfigAndConnection(t *testing.T) {
 	cfg.DBConnection.Ctx = context.Background()
 
 	connectionString := fmt.Sprintf(
-		"postgresql://%s:%s@%s:%s/%s",
+		"postgresql://%s:%s@%s:%s/%s?sslmode=%s",
 		cfg.DB.Username,
 		cfg.DB.Password,
 		cfg.DB.Host,
 		cfg.DB.Port,
 		cfg.DB.Database,
+		cfg.DB.SSLMode,
 	)
 
 	var err error
