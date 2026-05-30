@@ -138,7 +138,7 @@ func GetAllProducts() ([]model.Product, error) {
 	sql := `
 	SELECT ` + productColumns + `
 	FROM product
-	ORDER BY created_at DESC
+	WHERE is_active = true
 	`
 
 	rows, err := cfg.DBConnection.Pool.Query(
