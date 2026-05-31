@@ -9,11 +9,52 @@ import type { CartItem } from "@/lib/cart-contract";
 import type { Product } from "@/lib/product-contract";
 import * as cartService from "@/services/cartService";
 
+const productImageBasePath = "/product_images";
+
 function formatCurrency(cents: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(cents / 100);
+}
+
+function buildProductImagePath(imageValue?: string): string {
+  if (typeof imageValue !== "string" || !imageValue.trim()) {
+    return "/images/product-placeholder.png";
+  }
+
+  const trimmed = imageValue.trim().replace(/^\/+/, "");
+  return `${productImageBasePath}/${trimmed}`;
+}
+
+function extractImageUrl(value: unknown): string | undefined {
+  if (!value || typeof value !== "object") {
+    return undefined;
+  }
+
+  const record = value as Record<string, unknown>;
+  return (
+    (typeof record.image_url === "string" && record.image_url) ||
+    (typeof record.imageUrl === "string" && record.imageUrl) ||
+    (typeof record.url === "string" && record.url) ||
+    undefined
+  );
+}
+
+function resolveImageFromCollection(images: unknown): string | undefined {
+  if (!Array.isArray(images) || images.length === 0) {
+    return undefined;
+  }
+
+  const primary = images.find((item) => {
+    if (!item || typeof item !== "object") {
+      return false;
+    }
+    const record = item as Record<string, unknown>;
+    return record.is_primary === true || record.isPrimary === true;
+  });
+
+  return extractImageUrl(primary ?? images[0]);
 }
 
 function resolveProductId(product: Product, fallbackId: string): string {
@@ -71,7 +112,12 @@ function resolveImageUrl(product: Product): string {
     (typeof product["image"] === "string" && String(product["image"])) ||
     (typeof product["imageUrl"] === "string" && String(product["imageUrl"]));
 
-  return image || "/images/product-placeholder.png";
+  const imageFromCollection =
+    resolveImageFromCollection(product["product_image"]) ??
+    resolveImageFromCollection(product["product_images"]) ??
+    resolveImageFromCollection(product["images"]);
+
+  return buildProductImagePath(image ?? imageFromCollection);
 }
 
 export default function ProductDetailsPage() {

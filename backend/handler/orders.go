@@ -89,6 +89,11 @@ func HandleGetOrderByID(w http.ResponseWriter, req *http.Request) {
 			rpc.WriteError(w, http.StatusInternalServerError, "Error retrieving supplier")
 		}
 
+		productImages, err := db.GetProductImagesByProductId(product.Product_id)
+		if err != nil {
+			rpc.WriteError(w, http.StatusInternalServerError, "Error retrieving product images")
+		}
+
 		item := model.Order_item_list{
 			Quantity:        order_item.Quantity,
 			Unit_price:      order_item.Unit_price,
@@ -105,6 +110,7 @@ func HandleGetOrderByID(w http.ResponseWriter, req *http.Request) {
 					Supplier_id: supplier.Supplier_id,
 					Name:        supplier.Name,
 				},
+				Product_images: productImages,
 			},
 		}
 		response.Order_item = append(response.Order_item, item)

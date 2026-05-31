@@ -75,8 +75,7 @@ type Product_details struct {
 	Is_active        bool   `json:"is_active"`
 
 	Supplier Supplier_details `json:"supplier_details"`
-
-	// TODO: Product Image part - need mime/multipart stuff, but for now, ignore
+	Product_images []Product_image `json:"product_image"`
 }
 
 type Supplier_details struct {

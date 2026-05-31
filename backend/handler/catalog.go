@@ -8,6 +8,7 @@ import (
 	"github.com/P-SEN371-Group-3/educartion/model"
 	"github.com/P-SEN371-Group-3/educartion/rpc"
 	"github.com/P-SEN371-Group-3/educartion/service/db"
+	"github.com/jackc/pgx/v5"
 )
 
 // When a user clicks on catalog but have not searched.
@@ -36,6 +37,23 @@ func HandleGetProducts(w http.ResponseWriter, req *http.Request) {
 		)
 
 		return
+	}
+
+	for index, product := range products {
+		image, err := db.GetPrimaryProductImageByProductId(product.Product_id)
+		if err == pgx.ErrNoRows {
+			continue
+		}
+		if err != nil {
+			rpc.WriteError(
+				w,
+				http.StatusInternalServerError,
+				"Failed to retrieve product images",
+			)
+			return
+		}
+
+		products[index].Image_url = image.Image_url
 	}
 
 	rpc.WriteJSON(
@@ -74,10 +92,53 @@ func HandleGetProductById(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	supplier, err := db.GetSupplierById(product.Supplier_id)
+	if err == pgx.ErrNoRows {
+		rpc.WriteError(
+			w,
+			http.StatusNotFound,
+			"Supplier not found",
+		)
+		return
+	}
+	if err != nil {
+		rpc.WriteError(
+			w,
+			http.StatusInternalServerError,
+			"Failed to retrieve supplier",
+		)
+		return
+	}
+
+	productImages, err := db.GetProductImagesByProductId(product.Product_id)
+	if err != nil {
+		rpc.WriteError(
+			w,
+			http.StatusInternalServerError,
+			"Failed to retrieve product images",
+		)
+		return
+	}
+
+	response := model.Product_details{
+		Product_id:       product.Product_id,
+		Name:             product.Name,
+		Description:      product.Description,
+		Price:            product.Price,
+		Discount_percent: product.Discount_percent,
+		Stock_quantity:   product.Stock_quantity,
+		Is_active:        product.Is_active,
+		Supplier: model.Supplier_details{
+			Supplier_id: supplier.Supplier_id,
+			Name:        supplier.Name,
+		},
+		Product_images: productImages,
+	}
+
 	rpc.WriteJSON(
 		w,
 		http.StatusOK,
-		product,
+		response,
 	)
 }
 func HandleCreateProduct(w http.ResponseWriter, req *http.Request) {

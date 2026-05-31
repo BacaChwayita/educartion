@@ -44,11 +44,11 @@ VALUES
 
 INSERT INTO product_image (product_image_id, product_id, image_url, alt_text, is_primary, sort_order)
 VALUES
-    (1, 1, 'https://example.com/images/products/phone-x-1.jpg', 'Smartphone X front', TRUE, 1),
-    (2, 1, 'https://example.com/images/products/phone-x-2.jpg', 'Smartphone X back', FALSE, 2),
-    (3, 2, 'https://example.com/images/products/earbuds-1.jpg', 'Wireless Earbuds case', TRUE, 1),
-    (4, 3, 'https://example.com/images/products/bottle-1.jpg', 'Reusable Bottle', TRUE, 1),
-    (5, 4, 'https://example.com/images/products/lamp-1.jpg', 'Clearance Desk Lamp', TRUE, 1);
+    (1, 1, 'Smartphone X - Front.jpg', 'Smartphone X front', TRUE, 1),
+    (2, 1, 'Smartphone X - Back.jpg', 'Smartphone X back', FALSE, 2),
+    (3, 2, 'Wireless Earbuds.jpg', 'Wireless Earbuds case', TRUE, 1),
+    (4, 3, 'Reusable Bottle.jpg', 'Reusable Bottle', TRUE, 1),
+    (5, 4, 'Clearance Desk Lamp.jpg', 'Clearance Desk Lamp', TRUE, 1);
 
 INSERT INTO cart (cart_id, account_id, session_key, total_price)
 VALUES

@@ -41,6 +41,7 @@ type Product struct {
 	Discount_percent int    `json:"discount_percent"`
 	Stock_quantity   int    `json:"stock_quantity"`
 	Is_active        bool   `json:"is_active"`
+	Image_url        string `json:"image_url"`
 }
 
 type Product_image struct {

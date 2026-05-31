@@ -6,11 +6,68 @@ import { useEffect, useMemo, useState } from "react";
 import { handleLoadProducts } from "@/controllers/productController";
 import type { Product } from "@/lib/product-contract";
 
+const productImageBasePath = "/product_images";
+
 function formatCurrency(cents: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
   }).format(cents / 100);
+}
+
+function buildProductImagePath(imageValue?: string): string {
+  if (typeof imageValue !== "string" || !imageValue.trim()) {
+    return "/images/product-placeholder.png";
+  }
+
+  const trimmed = imageValue.trim().replace(/^\/+/, "");
+  return `${productImageBasePath}/${trimmed}`;
+}
+
+function extractImageUrl(value: unknown): string | undefined {
+  if (!value || typeof value !== "object") {
+    return undefined;
+  }
+
+  const record = value as Record<string, unknown>;
+  return (
+    (typeof record.image_url === "string" && record.image_url) ||
+    (typeof record.imageUrl === "string" && record.imageUrl) ||
+    (typeof record.url === "string" && record.url) ||
+    undefined
+  );
+}
+
+function resolveImageFromCollection(images: unknown): string | undefined {
+  if (!Array.isArray(images) || images.length === 0) {
+    return undefined;
+  }
+
+  const primary = images.find((item) => {
+    if (!item || typeof item !== "object") {
+      return false;
+    }
+    const record = item as Record<string, unknown>;
+    return record.is_primary === true || record.isPrimary === true;
+  });
+
+  return extractImageUrl(primary ?? images[0]);
+}
+
+function resolveImageUrl(product: Product): string {
+  const image =
+    (typeof product.image === "string" && product.image) ||
+    (typeof product.image_url === "string" && product.image_url) ||
+    (typeof product["image_url"] === "string" && String(product["image_url"])) ||
+    (typeof product["image"] === "string" && String(product["image"])) ||
+    (typeof product["imageUrl"] === "string" && String(product["imageUrl"]));
+
+  const imageFromCollection =
+    resolveImageFromCollection(product["product_image"]) ??
+    resolveImageFromCollection(product["product_images"]) ??
+    resolveImageFromCollection(product["images"]);
+
+  return buildProductImagePath(image ?? imageFromCollection);
 }
 
 export default function ProductsPage() {
@@ -176,6 +233,7 @@ export default function ProductsPage() {
                 {filteredProducts.map((product, index) => {
                   const rawId = product.id ?? product.product_id ?? product["product_id"] ?? index;
                   const productId = typeof rawId === "string" || typeof rawId === "number" ? String(rawId) : String(index);
+                  const imageUrl = resolveImageUrl(product);
 
                   return (
                     <Link
@@ -184,6 +242,11 @@ export default function ProductsPage() {
                       className="group overflow-hidden rounded-3xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 transition hover:-translate-y-1 hover:bg-white/8 hover:border-amber-300/40 backdrop-blur-xl"
                     >
                       <article>
+                        <div className="mb-4 overflow-hidden rounded-2xl border border-white/10 bg-slate-900/60">
+                          <div className="relative aspect-[4/3] w-full">
+                            <img src={imageUrl} alt={product.name ?? "Product image"} className="h-full w-full object-cover" />
+                          </div>
+                        </div>
                         <h2 className="text-xl font-semibold text-white transition group-hover:text-amber-200">
                           {product.name ?? "Unnamed product"}
                         </h2>
