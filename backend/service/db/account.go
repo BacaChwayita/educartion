@@ -204,9 +204,9 @@ func GetAccountByJTI(token_string string) (model.Account, error) {
 		a.role,
 		a.login_attempts,
 		a.is_active,
-		a.created_at,
+		a.created_at
 	FROM ACCOUNT a
-	INNER JOIN AccountLogins al
+	INNER JOIN AccountLogin al
 	  ON al.account_id = a.account_id
 	WHERE al.token_string = $1
 	`

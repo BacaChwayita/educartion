@@ -63,7 +63,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
     - [ ] Check recording in case there's something missed
     - [ ] Front End Switching between Light and Dark Themes
     - [ ] Resize the blocks (+ image) on products
-    - [ ] Fix delete button overlaying price on cart page
+    - [x] Fix delete button overlaying price on cart page
     - [ ] Move categories to the left
     - [ ] Slider needs to be added (check other filters as well on products page)
 
@@ -76,6 +76,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [ ] 3. Check functionality on each page, if working then this can be ticked:
     - [ ] Products page
     - [ ] Product details page
+        - [ ] Add product button does not appear to do anything, but it does actually
     - [ ] Cart page
     - [ ] Checkout page
     - [ ] Orders page
