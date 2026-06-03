@@ -164,8 +164,8 @@ export default function ProductsPage() {
             </div>
 
             <div className="flex min-w-[170px] items-center justify-end gap-2 md:gap-3">
-              <button
-                type="button"
+              <Link
+                href="/orders"
                 className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
@@ -173,7 +173,7 @@ export default function ProductsPage() {
                   <path d="M4 20a8 8 0 0 1 16 0" />
                 </svg>
                 <span>Account</span>
-              </button>
+              </Link>
               <Link
                 href="/cart"
                 className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
