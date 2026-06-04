@@ -127,6 +127,7 @@ export default function ProductDetailsPage() {
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -187,6 +188,7 @@ export default function ProductDetailsPage() {
   const maxQuantity = isInStock ? normalizedStock : 1;
 
   const updateQuantity = (value: number) => {
+    setSuccessMessage(null);
     const safeValue = Number.isFinite(value) ? value : 1;
     const clamped = Math.min(Math.max(1, safeValue), Math.max(1, maxQuantity));
     setQuantity(clamped);
@@ -221,6 +223,8 @@ export default function ProductDetailsPage() {
     }
 
     cartService.saveCartToStorage(updated);
+    
+    setSuccessMessage(`${quantity} item(s) added to cart.`);
   };
 
   return (
@@ -347,6 +351,14 @@ export default function ProductDetailsPage() {
                         Add to cart
                       </button>
                     </div>
+                    {successMessage && (
+                      <div>
+                        <br />
+                        <div className="mb-4 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
+                        {successMessage}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
