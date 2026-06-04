@@ -153,29 +153,6 @@ export default function OrdersPage() {
         </header>
 
         <div className="flex flex-1 flex-col gap-6 xl:flex-row">
-          <aside className="h-fit w-full shrink-0 rounded-4xl border border-white/10 bg-white/5 p-4 shadow-2xl shadow-black/30 backdrop-blur-xl xl:w-80">
-            <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-3">
-              <nav className="space-y-2">
-                {sidebarItems.map((item) => {
-                  const isSelected = item === "My Orders";
-
-                  return (
-                    <button
-                      key={item}
-                      type="button"
-                      className={`w-full rounded-2xl px-4 py-3 text-left text-sm font-medium transition ${
-                        isSelected
-                          ? "bg-amber-400 text-slate-950 shadow-lg shadow-amber-400/20"
-                          : "border border-white/10 bg-white/5 text-slate-200 hover:bg-white/10"
-                      }`}
-                    >
-                      {item}
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-          </aside>
 
           <main className="min-w-0 flex-1 rounded-4xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl lg:p-8">
             <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-6 sm:p-8">
