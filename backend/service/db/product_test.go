@@ -59,17 +59,6 @@ func TestInsertProduct(t *testing.T) {
 
 func TestGetProductById(t *testing.T) {
 
-	insProd := model.Product{
-		Product_id:       -1,
-		Supplier_id:      1,
-		Name:             "Test Product",
-		Description:      "Test Description",
-		Price:            19999,
-		Discount_percent: 0,
-		Stock_quantity:   10,
-		Is_active:        true,
-	}
-
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf(
@@ -77,6 +66,18 @@ func TestGetProductById(t *testing.T) {
 			err.Error(),
 		)
 	}
+
+	sup, err := db.InsertSupplier(newTestSupplier())
+	if err != nil {
+		t.Fatalf("InsertSupplier() call failed: %s", err.Error())
+	}
+
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Fatalf("InsertCategory() call failed: %s", err.Error())
+	}
+
+	insProd := newTestProduct(sup.Supplier_id, cat.Category_id)
 
 	newProd, err := db.InsertProduct(insProd)
 	if err != nil {
@@ -101,17 +102,6 @@ func TestGetProductById(t *testing.T) {
 }
 func TestUpdateProduct(t *testing.T) {
 
-	insProd := model.Product{
-		Product_id:       -1,
-		Supplier_id:      1,
-		Name:             "Test Product",
-		Description:      "Test Description",
-		Price:            19999,
-		Discount_percent: 0,
-		Stock_quantity:   10,
-		Is_active:        true,
-	}
-
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf(
@@ -119,6 +109,18 @@ func TestUpdateProduct(t *testing.T) {
 			err.Error(),
 		)
 	}
+
+	sup, err := db.InsertSupplier(newTestSupplier())
+	if err != nil {
+		t.Fatalf("InsertSupplier() call failed: %s", err.Error())
+	}
+
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Fatalf("InsertCategory() call failed: %s", err.Error())
+	}
+
+	insProd := newTestProduct(sup.Supplier_id, cat.Category_id)
 
 	newProd, err := db.InsertProduct(insProd)
 	if err != nil {
@@ -160,17 +162,6 @@ func TestUpdateProduct(t *testing.T) {
 }
 func TestDeleteProductById(t *testing.T) {
 
-	insProd := model.Product{
-		Product_id:       -1,
-		Supplier_id:      1,
-		Name:             "Test Product",
-		Description:      "Test Description",
-		Price:            19999,
-		Discount_percent: 0,
-		Stock_quantity:   10,
-		Is_active:        true,
-	}
-
 	err := SetupTestDBConfigAndConnection()
 	if err != nil {
 		t.Fatalf(
@@ -178,6 +169,18 @@ func TestDeleteProductById(t *testing.T) {
 			err.Error(),
 		)
 	}
+
+	sup, err := db.InsertSupplier(newTestSupplier())
+	if err != nil {
+		t.Fatalf("InsertSupplier() call failed: %s", err.Error())
+	}
+
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Fatalf("InsertCategory() call failed: %s", err.Error())
+	}
+
+	insProd := newTestProduct(sup.Supplier_id, cat.Category_id)
 
 	newProd, err := db.InsertProduct(insProd)
 	if err != nil {

@@ -11,6 +11,7 @@ import (
 	"github.com/P-SEN371-Group-3/educartion/model"
 	"github.com/P-SEN371-Group-3/educartion/service/catalog"
 	"github.com/P-SEN371-Group-3/educartion/service/db"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -50,14 +51,24 @@ func newTestSupplier() model.Supplier {
 	}
 }
 
-func newTestProduct(supplierID int) model.Product {
+func newTestCategory() model.Category {
+	return model.Category{
+		Name:        uuid.New().String(),
+		Description: "Test Description",
+		Is_active:   true,
+	}
+}
+
+func newTestProduct(supplier_id, category_id int) model.Product {
 	return model.Product{
-		Supplier_id:      supplierID,
-		Name:             fmt.Sprintf("Test Product %d", time.Now().UnixNano()),
-		Description:      "Catalog service test product",
+		Product_id:       -1,
+		Supplier_id:      supplier_id,
+		Category_id:      category_id,
+		Name:             "Test Product",
+		Description:      "Test Description",
 		Price:            1000,
 		Discount_percent: 0,
-		Stock_quantity:   100,
+		Stock_quantity:   10,
 		Is_active:        true,
 	}
 }
@@ -70,7 +81,12 @@ func TestInsertAndGetProductById(t *testing.T) {
 		t.Fatalf("InsertSupplier() failed: %s", err.Error())
 	}
 
-	product := newTestProduct(supplier.Supplier_id)
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Fatalf("newTestCategory() failed: %s", err.Error())
+	}
+
+	product := newTestProduct(supplier.Supplier_id, cat.Category_id)
 	created, err := catalog.InsertProduct(product)
 	if err != nil {
 		t.Fatalf("InsertProduct() failed: %s", err.Error())
@@ -109,8 +125,13 @@ func TestGetProductBySupplierIdAndGetAllProducts(t *testing.T) {
 		t.Fatalf("InsertSupplier() failed: %s", err.Error())
 	}
 
-	activeProduct := newTestProduct(supplier.Supplier_id)
-	inactiveProduct := newTestProduct(supplier.Supplier_id)
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Fatalf("newTestCategory() failed: %s", err.Error())
+	}
+
+	activeProduct := newTestProduct(supplier.Supplier_id, cat.Category_id)
+	inactiveProduct := newTestProduct(supplier.Supplier_id, cat.Category_id)
 	inactiveProduct.Is_active = false
 
 	activeCreated, err := catalog.InsertProduct(activeProduct)
@@ -171,7 +192,12 @@ func TestUpdateProduct(t *testing.T) {
 		t.Fatalf("InsertSupplier() failed: %s", err.Error())
 	}
 
-	product := newTestProduct(supplier.Supplier_id)
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Fatalf("newTestCategory() failed: %s", err.Error())
+	}
+
+	product := newTestProduct(supplier.Supplier_id, cat.Category_id)
 	created, err := catalog.InsertProduct(product)
 	if err != nil {
 		t.Fatalf("InsertProduct() failed: %s", err.Error())
@@ -218,7 +244,13 @@ func TestDeleteProductById(t *testing.T) {
 		t.Fatalf("InsertSupplier() failed: %s", err.Error())
 	}
 
-	product := newTestProduct(supplier.Supplier_id)
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Fatalf("newTestCategory() failed: %s", err.Error())
+	}
+	fmt.Printf("Created Category with ID: %d\n", cat.Category_id)
+
+	product := newTestProduct(supplier.Supplier_id, cat.Category_id)
 	created, err := catalog.InsertProduct(product)
 	if err != nil {
 		t.Fatalf("InsertProduct() failed: %s", err.Error())

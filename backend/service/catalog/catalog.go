@@ -13,6 +13,7 @@ import (
 const productColumns = `
 	product_id,
 	supplier_id,
+	category_id,
 	name,
 	description,
 	price,
@@ -27,6 +28,7 @@ func scanProduct(row pgx.Row) (model.Product, error) {
 	err := row.Scan(
 		&p.Product_id,
 		&p.Supplier_id,
+		&p.Category_id,
 		&p.Name,
 		&p.Description,
 		&p.Price,
@@ -44,6 +46,7 @@ func InsertProduct(product model.Product) (model.Product, error) {
 	sql := `
 	INSERT INTO PRODUCT (
 		supplier_id,
+		category_id,
 		name,
 		description,
 		price,
@@ -51,13 +54,14 @@ func InsertProduct(product model.Product) (model.Product, error) {
 		stock_quantity,
 		is_active
 	)
-	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	RETURNING ` + productColumns
 
 	row := cfg.DBConnection.Pool.QueryRow(
 		cfg.DBConnection.Ctx,
 		sql,
 		product.Supplier_id,
+		product.Category_id,
 		product.Name,
 		product.Description,
 		product.Price,
@@ -222,12 +226,13 @@ func UpdateProduct(product model.Product) (int64, error) {
 	UPDATE PRODUCT
 	SET
 		supplier_id = $2,
-		name = $3,
-		description = $4,
-		price = $5,
-		discount_percent = $6,
-		stock_quantity = $7,
-		is_active = $8
+		category_id = $3,
+		name = $4,
+		description = $5,
+		price = $6,
+		discount_percent = $7,
+		stock_quantity = $8,
+		is_active = $9
 	WHERE product_id = $1
 	`
 
@@ -236,6 +241,7 @@ func UpdateProduct(product model.Product) (int64, error) {
 		sql,
 		product.Product_id,
 		product.Supplier_id,
+		product.Category_id,
 		product.Name,
 		product.Description,
 		product.Price,
