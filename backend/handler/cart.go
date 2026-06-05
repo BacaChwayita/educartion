@@ -195,8 +195,17 @@ func HandleDeleteCartItem(w http.ResponseWriter, req *http.Request, productID st
 }
 
 func HandleCartItem(w http.ResponseWriter, r *http.Request) {
+	path := r.URL.Path
+	var productID string
 
-	productID := strings.TrimPrefix(r.URL.Path, "/api/cart/item/")
+	switch {
+	case strings.HasPrefix(path, "/api/cart/item/update/"):
+		productID = strings.TrimPrefix(path, "/api/cart/item/update/")
+	case strings.HasPrefix(path, "/api/cart/item/delete/"):
+		productID = strings.TrimPrefix(path, "/api/cart/item/delete/")
+	default:
+		productID = strings.TrimPrefix(path, "/api/cart/item/")
+	}
 
 	if productID == "" {
 		http.Error(w, "The product id is missing", http.StatusBadRequest)

@@ -106,11 +106,21 @@ func main() {
 		setHandlerFunc(http.HandlerFunc(handler.HandleDeleteProduct)),
 	)
 
+	// Categories
+	http.Handle("/api/categories", setHandlerFunc(http.HandlerFunc(handler.HandleCategories)))
+	http.Handle("/api/categories/create", setHandlerFunc(http.HandlerFunc(handler.HandleCategories)))
+	http.Handle("/api/categories/update/", setHandlerFunc(http.HandlerFunc(handler.HandleCategory)))
+	http.Handle("/api/categories/delete/", setHandlerFunc(http.HandlerFunc(handler.HandleCategory)))
+	http.Handle("/api/categories/", setHandlerFunc(http.HandlerFunc(handler.HandleCategory)))
+	http.Handle("/api/categories/products", setHandlerFunc(http.HandlerFunc(handler.HandleCategoryProducts)))
+
 	// Cart
-	// TODO: rest of Cart
 	http.Handle("/api/cart", setHandlerFunc(http.HandlerFunc(handler.HandleCart)))
 	http.Handle("/api/cart/items", setHandlerFunc(http.HandlerFunc(handler.HandleCartItems)))
-	http.Handle("/api/cart/item/{productId}", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
+	http.Handle("/api/cart/items/add", setHandlerFunc(http.HandlerFunc(handler.HandleAddCart)))
+	http.Handle("/api/cart/item/", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
+	http.Handle("/api/cart/item/update/", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
+	http.Handle("/api/cart/item/delete/", setHandlerFunc(http.HandlerFunc(handler.HandleCartItem)))
 
 	// Orders
 	http.Handle("/api/orders/", setHandlerFunc(http.HandlerFunc(handler.HandleGetOrders)))
@@ -118,7 +128,8 @@ func main() {
 	// TODO: rest of Orders
 
 	// Payments
-	// TODO: rest of Payments
+	http.Handle("/api/payments", setHandlerFunc(http.HandlerFunc(handler.HandlePayments)))
+	http.Handle("/api/payments/", setHandlerFunc(http.HandlerFunc(handler.HandlePaymentByID)))
 
 	// Admin
 	// TODO: rest of Admin
@@ -173,5 +184,3 @@ func setHandlerFunc(h http.Handler) http.Handler {
 		)
 	})
 }
-
-//Endpoints for Catalog/ Product

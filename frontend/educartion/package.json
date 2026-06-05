@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next dev",
+    "build": "cross-env NODE_OPTIONS=--max-old-space-size=4096 next build",
     "start": "next start",
     "lint": "eslint",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "dependencies": {
     "next": "16.2.6",
@@ -27,6 +28,7 @@
     "@types/react-dom": "^19",
     "@types/supertest": "^7.2.0",
     "babel-plugin-react-compiler": "1.0.0",
+    "cross-env": "^10.1.0",
     "eslint": "^9",
     "eslint-config-next": "16.2.6",
     "jest": "^30.4.2",

@@ -74,8 +74,8 @@ type Product_details struct {
 	Stock_quantity   int    `json:"stock_quantity"`
 	Is_active        bool   `json:"is_active"`
 
-	Supplier Supplier_details `json:"supplier_details"`
-	Product_images []Product_image `json:"product_image"`
+	Supplier       Supplier_details `json:"supplier_details"`
+	Product_images []Product_image  `json:"product_image"`
 }
 
 type Supplier_details struct {
@@ -101,4 +101,41 @@ type AddCartItemRequest struct {
 
 type UpdateCartItemRequest struct {
 	Quantity int `json:"quantity"`
+}
+
+type GetCategoryByIDRequest struct {
+	Id int `json:"id"`
+}
+
+type GetCategoryByIDResponse struct {
+	Category_id int    `json:"category_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
+}
+
+type CreateCategoryRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
+}
+
+type CreateCategoryResponse struct {
+	Category_id int    `json:"category_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
+}
+
+type UpdateCategoryRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
+}
+
+type UpdateCategoryResponse struct {
+	Category_id int    `json:"category_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
 }

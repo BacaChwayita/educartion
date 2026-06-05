@@ -1,0 +1,293 @@
+﻿FAIL	github.com/P-SEN371-Group-3/educartion [setup failed]
+go : # github.com/P-SEN371-Group-3/educartion
+At line:1 char:88
++ ... e\category\errors.go handler\category.go ; go test ./... 2>&1 | Out-F ...
++                                                ~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (# github.com/P-SEN371-Group-3/edu 
+   cartion:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+service\category\category_test.go:1:1: expected 'package', found 'EOF'
+FAIL	github.com/P-SEN371-Group-3/educartion/handler [setup failed]
+# github.com/P-SEN371-Group-3/educartion/handler
+service\category\category_test.go:1:1: expected 'package', found 'EOF'
+# github.com/P-SEN371-Group-3/educartion/service/category
+service\category\category_test.go:1:1: expected 'package', found 'EOF'
+FAIL	github.com/P-SEN371-Group-3/educartion/service/category [setup failed]
+ok  	github.com/P-SEN371-Group-3/educartion/config	(cached)
+?   	github.com/P-SEN371-Group-3/educartion/model	[no test files]
+ok  	github.com/P-SEN371-Group-3/educartion/rpc	(cached)
+time=2026-06-01T21:36:28.381+02:00 level=INFO msg="Error on db insert" error="failed to connect to `user=postgres database=`:\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it." func=InsertAccount timestamp="time.Date(2026, time.June, 1, 21, 36, 28, 381740000, time.Local)"
+--- FAIL: TestRegister (0.98s)
+    auth_test.go:69: Expected nil, got could not insert into database
+time=2026-06-01T21:36:29.131+02:00 level=INFO msg="Error on db insert" error="failed to connect to `user=postgres database=`:\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it." func=InsertAccount timestamp="time.Date(2026, time.June, 1, 21, 36, 29, 131171800, time.Local)"
+time=2026-06-01T21:36:29.141+02:00 level=INFO msg="Error on db select" error="failed to connect to `user=postgres database=`:\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it." func=GetUserByEmail timestamp="time.Date(2026, time.June, 1, 21, 36, 29, 141596100, time.Local)" email="2026-06-01 21:36:28.38174 +0200 SAST m=+3.729690501@testmail.com"
+--- FAIL: TestLoginWithEmail (0.76s)
+    auth_test.go:95: Expected nil, got unkown error
+    auth_test.go:99: Expected JWT Token, got blank value
+    auth_test.go:103: Expected valid account_id, got 0
+FAIL
+FAIL	github.com/P-SEN371-Group-3/educartion/service/auth	5.234s
+ok  	github.com/P-SEN371-Group-3/educartion/service/cart	(cached)
+ok  	github.com/P-SEN371-Group-3/educartion/service/catalog	(cached)
+--- FAIL: TestInsertAccount (0.18s)
+    account_test.go:25: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetAccountById (0.01s)
+    account_test.go:51: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestUpdateAccount (0.01s)
+    account_test.go:87: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestDeleteAccountById (0.04s)
+    account_test.go:125: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetAccountByEmail (0.02s)
+    account_test.go:168: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestIncLoginAttempts (0.01s)
+    account_test.go:215: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestInsertAccountLogin (0.06s)
+    account_test.go:328: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestInsertCartItem (0.02s)
+    cartItem_test.go:16: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetCartItem (0.00s)
+    cartItem_test.go:102: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetCartItemsByCart (0.01s)
+    cartItem_test.go:193: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestUpdateCartItem (0.02s)
+    cartItem_test.go:304: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestDeleteCartItem (0.01s)
+    cartItem_test.go:399: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestInsertCart (0.04s)
+    cart_test.go:16: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetCartById (0.00s)
+    cart_test.go:63: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetCartByAccountId (0.01s)
+    cart_test.go:97: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetCartBySessionKey (0.01s)
+    cart_test.go:133: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestUpdateCart (0.01s)
+    cart_test.go:175: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestDeleteCartById (0.03s)
+    cart_test.go:214: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetCartByJTI (0.01s)
+    cart_test.go:255: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestInsertOrderItem (0.02s)
+    order_item_test.go:40: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetOrderItemById (0.02s)
+    order_item_test.go:75: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestUpdateOrderItem (0.01s)
+    order_item_test.go:122: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestDeleteOrderItemById (0.01s)
+    order_item_test.go:175: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+time=2026-06-01T21:36:25.204+02:00 level=INFO msg="Error on db insert" error="failed to connect to `user=postgres database=`:\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it." func=InsertAccount timestamp="time.Date(2026, time.June, 1, 21, 36, 25, 204209500, time.Local)"
+--- FAIL: TestInsertOrder (0.01s)
+    order_test.go:42: Error on db insert: failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+time=2026-06-01T21:36:25.208+02:00 level=INFO msg="Error on db insert" error="failed to connect to `user=postgres database=`:\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it." func=InsertAccount timestamp="time.Date(2026, time.June, 1, 21, 36, 25, 208797600, time.Local)"
+--- FAIL: TestGetOrderById (0.00s)
+    order_test.go:64: Error on db insert: failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+time=2026-06-01T21:36:25.225+02:00 level=INFO msg="Error on db insert" error="failed to connect to `user=postgres database=`:\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it." func=InsertAccount timestamp="time.Date(2026, time.June, 1, 21, 36, 25, 224262400, time.Local)"
+--- FAIL: TestUpdateOrder (0.02s)
+    order_test.go:96: Error on db insert: failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+time=2026-06-01T21:36:25.232+02:00 level=INFO msg="Error on db insert" error="failed to connect to `user=postgres database=`:\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.\n\t[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.\n\t127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it." func=InsertAccount timestamp="time.Date(2026, time.June, 1, 21, 36, 25, 232810300, time.Local)"
+--- FAIL: TestDeleteOrderById (0.01s)
+    order_test.go:130: Error on db insert: failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetProductImagesByProductId (0.01s)
+    product_image_test.go:37: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetPrimaryProductImageByProductId (0.01s)
+    product_image_test.go:74: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetPrimaryProductImageByProductIdNoRows (0.02s)
+    product_image_test.go:106: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestInsertProduct (0.02s)
+    product_test.go:38: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetProductById (0.03s)
+    product_test.go:74: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestUpdateProduct (0.01s)
+    product_test.go:116: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestDeleteProductById (0.00s)
+    product_test.go:175: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestInsertShipment (0.02s)
+    shipment_test.go:42: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetShipmentById (0.03s)
+    shipment_test.go:71: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestUpdateShipment (0.02s)
+    shipment_test.go:111: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestDeleteShipmentById (0.01s)
+    shipment_test.go:152: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestInsertSupplier (0.03s)
+    supplier_test.go:29: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestGetSuplierById (0.01s)
+    supplier_test.go:53: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestUpdateSupplier (0.03s)
+    supplier_test.go:87: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+--- FAIL: TestDeleteSupplierById (0.00s)
+    supplier_test.go:123: SetupTestDBConfigAndConnection() call failed: Unable to ping database:failed to connect to `user=postgres database=`:
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+        	[::1]:54321 (localhost): dial error: dial tcp [::1]:54321: connectex: No connection could be made because the target machine actively refused it.
+        	127.0.0.1:54321 (localhost): dial error: dial tcp 127.0.0.1:54321: connectex: No connection could be made because the target machine actively refused it.
+FAIL
+FAIL	github.com/P-SEN371-Group-3/educartion/service/db	1.593s
+ok  	github.com/P-SEN371-Group-3/educartion/service/payment	(cached)
+ok  	github.com/P-SEN371-Group-3/educartion/service/shipping	(cached)
+FAIL

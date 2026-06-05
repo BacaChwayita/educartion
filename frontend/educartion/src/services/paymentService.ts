@@ -22,7 +22,6 @@ export async function submitCheckout(
   }
 
   try {
-    // Simulate order submission
     // In a real app, this would call an API endpoint
     const orderId = `ORD-${Date.now()}`;
 

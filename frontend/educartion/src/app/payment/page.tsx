@@ -7,11 +7,12 @@ import React, { useEffect, useState } from "react";
 type CartItem = { id: string | number; title: string; price: number; image?: string; description?: string; qty: number };
 
 const DELIVERY_FEE = 5.0;
-const formatMoney = (v: number) => `$${v.toFixed(2)}`;
+const formatMoney = (v: number) => `R${v.toFixed(2)}`;
 
 export default function PaymentPage() {
   const router = useRouter();
   const [cart, setCart] = useState<CartItem[]>([]);
+  const [search, setSearch] = useState("");
   const [loaded, setLoaded] = useState(false);
 
   const [name, setName] = useState("");
