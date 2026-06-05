@@ -50,7 +50,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
     - [ ] Catalog
     - [x] Cart
     - [ ] Orders
-    - [ ] Payments
+    - [x] Payments
     - [ ] Shipment
     - [ ] Admin
 - [ ] Unit Tests

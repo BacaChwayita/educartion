@@ -1,0 +1,1 @@
+﻿ok  	github.com/P-SEN371-Group-3/educartion/service/category	5.335s [no tests to run]

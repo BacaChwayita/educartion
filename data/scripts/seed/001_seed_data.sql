@@ -35,12 +35,17 @@ VALUES
     (1, 'Mzansi Gadgets', 'support@mzansigadgets.example', '+27-10-555-0101'),
     (2, 'EcoHome Supplies', 'hello@ecohome.example', '+27-10-555-0102');
 
-INSERT INTO product (product_id, supplier_id, name, description, price, discount_percent, stock_quantity, is_active)
+INSERT INTO category (category_id, name, description, is_active)
 VALUES
-    (1, 1, 'Smartphone X', 'Latest model smartphone', 4999.00, 0.00, 25, TRUE),
-    (2, 1, 'Wireless Earbuds', 'Noise-cancelling earbuds', 899.00, 10.00, 0, TRUE),
-    (3, 2, 'Reusable Bottle', 'Insulated 750ml bottle', 199.00, 15.00, 5, TRUE),
-    (4, 2, 'Clearance Desk Lamp', 'Last-season lamp', 599.00, 50.00, 2, FALSE);
+    (1, 'Electronics', 'Electronic devices and accessories', TRUE),
+    (2, 'Home', 'Home and living products', TRUE);
+
+INSERT INTO product (product_id, supplier_id, category_id, name, description, price, discount_percent, stock_quantity, is_active)
+VALUES
+    (1, 1, 1, 'Smartphone X', 'Latest model smartphone', 4999.00, 0.00, 25, TRUE),
+    (2, 1, 1, 'Wireless Earbuds', 'Noise-cancelling earbuds', 899.00, 10.00, 0, TRUE),
+    (3, 2, 2, 'Reusable Bottle', 'Insulated 750ml bottle', 199.00, 15.00, 5, TRUE),
+    (4, 2, 2, 'Clearance Desk Lamp', 'Last-season lamp', 599.00, 50.00, 2, FALSE);
 
 INSERT INTO product_image (product_image_id, product_id, image_url, alt_text, is_primary, sort_order)
 VALUES
