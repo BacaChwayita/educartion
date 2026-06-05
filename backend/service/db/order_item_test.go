@@ -26,7 +26,12 @@ func setupSupplierAndProduct() (model.Supplier, model.Product, error) {
 		return model.Supplier{}, model.Product{}, errors.New("InsertSupplier() call failed: " + err.Error())
 	}
 
-	prd, err := db.InsertProduct(newTestProduct(sup.Supplier_id))
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		return model.Supplier{}, model.Product{}, errors.New("InsertCategory() call failed: " + err.Error())
+	}
+
+	prd, err := db.InsertProduct(newTestProduct(sup.Supplier_id, cat.Category_id))
 	if err != nil {
 		return model.Supplier{}, model.Product{}, errors.New("InsertProduct() call failed: " + err.Error())
 	}

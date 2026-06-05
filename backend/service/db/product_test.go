@@ -8,10 +8,11 @@ import (
 	"github.com/jackc/pgx/v5"
 )
 
-func newTestProduct(supplier_id int) model.Product {
+func newTestProduct(supplier_id, category_id int) model.Product {
 	return model.Product{
 		Product_id:       -1,
 		Supplier_id:      supplier_id,
+		Category_id:      category_id,
 		Name:             "Test Product",
 		Description:      "Test Description",
 		Price:            19999,

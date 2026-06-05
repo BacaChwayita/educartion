@@ -150,5 +150,5 @@ CREATE INDEX IF NOT EXISTS idx_payment_status ON payment (payment_status);
 CREATE INDEX IF NOT EXISTS idx_shipment_status ON shipment (shipment_status);
 CREATE INDEX IF NOT EXISTS idx_cart_item_product_id ON cart_item (product_id);
 CREATE INDEX IF NOT EXISTS idx_order_item_product_id ON order_item (product_id);
-CREATE INDEX IF NOT EXISTS idx_category_is_active ON :"schema_name".category (is_active);
-CREATE INDEX IF NOT EXISTS idx_product_category_id ON :"schema_name".product (category_id);
+CREATE INDEX IF NOT EXISTS idx_category_is_active ON category (is_active);
+CREATE INDEX IF NOT EXISTS idx_product_category_id ON product (category_id);

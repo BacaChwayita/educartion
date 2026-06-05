@@ -42,7 +42,12 @@ func TestGetProductImagesByProductId(t *testing.T) {
 		t.Fatalf("InsertSupplier() call failed: %s", err.Error())
 	}
 
-	product, err := db.InsertProduct(newTestProduct(supplier.Supplier_id))
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Errorf("InsertCategory() failed: %s", err.Error())
+	}
+
+	product, err := db.InsertProduct(newTestProduct(supplier.Supplier_id, cat.Category_id))
 	if err != nil {
 		t.Fatalf("InsertProduct() call failed: %s", err.Error())
 	}
@@ -79,7 +84,12 @@ func TestGetPrimaryProductImageByProductId(t *testing.T) {
 		t.Fatalf("InsertSupplier() call failed: %s", err.Error())
 	}
 
-	product, err := db.InsertProduct(newTestProduct(supplier.Supplier_id))
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Errorf("InsertCategory() failed: %s", err.Error())
+	}
+
+	product, err := db.InsertProduct(newTestProduct(supplier.Supplier_id, cat.Category_id))
 	if err != nil {
 		t.Fatalf("InsertProduct() call failed: %s", err.Error())
 	}
@@ -111,7 +121,12 @@ func TestGetPrimaryProductImageByProductIdNoRows(t *testing.T) {
 		t.Fatalf("InsertSupplier() call failed: %s", err.Error())
 	}
 
-	product, err := db.InsertProduct(newTestProduct(supplier.Supplier_id))
+	cat, err := db.InsertCategory(newTestCategory())
+	if err != nil {
+		t.Errorf("InsertCategory() failed: %s", err.Error())
+	}
+
+	product, err := db.InsertProduct(newTestProduct(supplier.Supplier_id, cat.Category_id))
 	if err != nil {
 		t.Fatalf("InsertProduct() call failed: %s", err.Error())
 	}
