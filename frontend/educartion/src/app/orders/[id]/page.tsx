@@ -298,13 +298,6 @@ export default function OrderDetailPage() {
                           className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 sm:flex-row sm:items-center"
                         >
                           <div className="flex flex-1 flex-col gap-4 sm:flex-row sm:items-center">
-                            <div className="h-20 w-20 overflow-hidden rounded-xl border border-white/10 bg-slate-900/60">
-                              <img
-                                src={imageUrl}
-                                alt={product?.name ?? "Product image"}
-                                className="h-full w-full object-cover"
-                              />
-                            </div>
                             <div>
                               <h4 className="text-lg font-semibold text-white">
                                 {product?.name ?? "Unnamed product"}
