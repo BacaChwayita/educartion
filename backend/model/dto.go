@@ -35,12 +35,14 @@ type Supplier struct {
 type Product struct {
 	Product_id       int    `json:"product_id"`
 	Supplier_id      int    `json:"supplier_id"`
+	Category_id      int    `json:"category_id"`
 	Name             string `json:"name"`
 	Description      string `json:"description"`
 	Price            int    `json:"price"`
 	Discount_percent int    `json:"discount_percent"`
 	Stock_quantity   int    `json:"stock_quantity"`
 	Is_active        bool   `json:"is_active"`
+	Image_url        string `json:"image_url"`
 }
 
 type Product_image struct {
@@ -116,4 +118,11 @@ type Order_item struct {
 	Quantity        int `json:"quantity"`
 	Unit_price      int `json:"unit_price"`
 	Discount_amount int `json:"discount_amount"`
+}
+
+type Category struct {
+	Category_id int    `json:"category_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
 }

@@ -25,6 +25,25 @@ psql -d educartion_db -f data\scripts\schema\001_create_tables_app.sql
 psql -d educartion_db -f data\scripts\schema\002_create_tables_app_test.sql
 ```
 
+## Seed data
+
+Seed file (run after tables are created):
+
+```powershell
+psql -d educartion_db -f data\scripts\seed\001_seed_data.sql
+psql -d educartion_db_test -f data\scripts\seed\001_seed_data.sql
+```
+
+### Personas and scenarios covered
+
+| Persona/Scenario | What it enables |
+| --- | --- |
+| Thandi Dlamini (customer) | Core shopper flow with cart, paid order, and delivered order states |
+| Sipho Maseko (admin) | Admin role for RBAC tests; seeded token in `accountlogin` |
+| Naledi Khumalo (supplier) | Supplier role for catalog/stock management scenarios |
+| Stock edge cases | Low stock, out-of-stock, and inactive product visibility tests |
+| Payment/shipment states | Paid vs failed payments; in-transit, delivered, and failed shipments |
+
 ## ERD
 
 The source ERD for the current database model is in:

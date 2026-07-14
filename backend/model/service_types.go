@@ -1,9 +1,19 @@
 package model
 
+import "time"
+
 type RegisterRequest struct {
 	Full_name     string `json:"full_name"`
 	Email         string `json:"email"`
 	Password_text string `json:"password_hash"`
+}
+
+type RegisterResponse struct {
+	Account_id int    `json:"account_id"`
+	Full_name  string `json:"full_name"`
+	Email      string `json:"email"`
+	Role       string `json:"role"`
+	Token      string `json:"token"`
 }
 
 type LoginWithEmailRequest struct {
@@ -21,4 +31,111 @@ type LoginResponse struct {
 	Email      string `json:"email"`
 	Role       string `json:"role"`
 	Token      string `json:"token"`
+}
+
+type LogoutRequest struct {
+	Token string `json:"token"`
+}
+
+type GetUserRequest struct {
+	Token string `json:"token"`
+}
+
+type GetOrderByIDRequest struct {
+	Id int `json:"id"`
+}
+
+type GetOrderByIDResponse struct {
+	Order_id        int       `json:"order_id"`
+	Order_number    string    `json:"order_number"`
+	Status          string    `json:"status"`
+	Subtotal_amount int       `json:"subtotal_amount"`
+	Discount_amount int       `json:"discount_amount"`
+	Total_amount    int       `json:"total_amount"`
+	Placed_at       time.Time `json:"placed_at"`
+
+	Order_item []Order_item_list `json:"order_item"`
+}
+
+type Order_item_list struct {
+	Quantity        int `json:"quantity"`
+	Unit_price      int `json:"unit_price"`
+	Discount_amount int `json:"discount_amount"`
+
+	Product Product_details `json:"product_details"`
+}
+
+type Product_details struct {
+	Product_id       int    `json:"product_id"`
+	Name             string `json:"name"`
+	Description      string `json:"description"`
+	Price            int    `json:"price"`
+	Discount_percent int    `json:"discount_percent"`
+	Stock_quantity   int    `json:"stock_quantity"`
+	Is_active        bool   `json:"is_active"`
+
+	Supplier       Supplier_details `json:"supplier_details"`
+	Product_images []Product_image  `json:"product_image"`
+}
+
+type Supplier_details struct {
+	Supplier_id int    `json:"supplier_id"`
+	Name        string `json:"name"`
+}
+
+type ProductRequest struct {
+	Search_name string `json:"search_name"`
+	Supplier_id int    `json:"supplier_id"`
+	Min_price   int    `json:"min_price"`
+	Max_price   int    `json:"max_price"`
+}
+
+type ProductResponse struct {
+	Products []Product
+}
+
+type AddCartItemRequest struct {
+	ProductID int `json:"product_id"`
+	Quantity  int `json:"quantity"`
+}
+
+type UpdateCartItemRequest struct {
+	Quantity int `json:"quantity"`
+}
+
+type GetCategoryByIDRequest struct {
+	Id int `json:"id"`
+}
+
+type GetCategoryByIDResponse struct {
+	Category_id int    `json:"category_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
+}
+
+type CreateCategoryRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
+}
+
+type CreateCategoryResponse struct {
+	Category_id int    `json:"category_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
+}
+
+type UpdateCategoryRequest struct {
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
+}
+
+type UpdateCategoryResponse struct {
+	Category_id int    `json:"category_id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Is_active   bool   `json:"is_active"`
 }

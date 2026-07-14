@@ -1,8 +1,10 @@
 package db
 
 import (
+	"errors"
 	"fmt"
 	"log/slog"
+	"strings"
 	"time"
 
 	"github.com/P-SEN371-Group-3/educartion/config"
@@ -13,6 +15,7 @@ import (
 const productColumns = `
 	product_id,
 	supplier_id,
+	category_id,
 	name,
 	description,
 	price,
@@ -28,6 +31,7 @@ func scanProduct(row pgx.Row) (model.Product, error) {
 	err := row.Scan(
 		&p.Product_id,
 		&p.Supplier_id,
+		&p.Category_id,
 		&p.Name,
 		&p.Description,
 		&p.Price,
@@ -46,6 +50,7 @@ func InsertProduct(p model.Product) (model.Product, error) {
 	sql := `
 	INSERT INTO product (
 		supplier_id,
+		category_id,
 		name,
 		description,
 		price,
@@ -53,7 +58,7 @@ func InsertProduct(p model.Product) (model.Product, error) {
 		stock_quantity,
 		is_active
 	)
-	VALUES ($1, $2, $3, $4, $5, $6, $7)
+	VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 	RETURNING product_id
 
 	`
@@ -61,6 +66,7 @@ func InsertProduct(p model.Product) (model.Product, error) {
 		cfg.DBConnection.Ctx,
 		sql,
 		p.Supplier_id,
+		p.Category_id,
 		p.Name,
 		p.Description,
 		p.Price,
@@ -134,9 +140,18 @@ func GetAllProducts() ([]model.Product, error) {
 	cfg := config.GetConfig()
 
 	sql := `
-	SELECT ` + productColumns + `
+	SELECT 
+		product_id,
+		supplier_id,
+		category_id,
+		name,
+		description,
+		price,
+		discount_percent,
+		stock_quantity,
+		is_active
 	FROM product
-	ORDER BY created_at DESC
+	WHERE is_active = true
 	`
 
 	rows, err := cfg.DBConnection.Pool.Query(
@@ -166,6 +181,7 @@ func GetAllProducts() ([]model.Product, error) {
 		err := rows.Scan(
 			&p.Product_id,
 			&p.Supplier_id,
+			&p.Category_id,
 			&p.Name,
 			&p.Description,
 			&p.Price,
@@ -191,12 +207,13 @@ func UpdateProduct(p model.Product) (int64, error) {
 	sql := `
 	UPDATE product
 	SET supplier_id = $2,
-		name = $3,
-		description = $4,
-		price = $5,
-		discount_percent = $6,
-		stock_quantity = $7,
-		is_active = $8
+	    category_id = $3,
+		name = $4,
+		description = $5,
+		price = $6,
+		discount_percent = $7,
+		stock_quantity = $8,
+		is_active = $9
 
 	WHERE product_id = $1
 	`
@@ -206,6 +223,7 @@ func UpdateProduct(p model.Product) (int64, error) {
 		sql,
 		p.Product_id,
 		p.Supplier_id,
+		p.Category_id,
 		p.Name,
 		p.Description,
 		p.Price,
@@ -261,3 +279,68 @@ func DeleteProductById(product_id int) (int64, error) {
 	return result.RowsAffected(), nil
 }
 
+func SearchProduct(products []model.Product, query string) ([]model.Product, error) {
+	if query == "" {
+		return nil, errors.New("search query cannot be empty")
+	}
+
+	var results []model.Product
+
+	for _, p := range products {
+		// simple case-insensitive contains search
+		if containsIgnoreCase(p.Name, query) {
+			results = append(results, p)
+		}
+	}
+
+	if len(results) == 0 {
+		return nil, errors.New("no products found")
+	}
+
+	return results, nil
+}
+
+func containsIgnoreCase(input string, query string) bool {
+	return strings.Contains(strings.ToLower(input), strings.ToLower(query))
+}
+
+type ProductSearchCriteria struct {
+	Search_name string
+	Supplier_id int
+	Min_price   int
+	Max_price   int
+}
+
+func GetProductsWithSearch(psc ProductSearchCriteria) ([]model.Product, error) {
+	products, err := GetAllProducts()
+	if err != nil {
+		return nil, err
+	}
+
+	if psc.Search_name == "" && psc.Supplier_id == 0 && psc.Min_price == 0 && psc.Max_price == 0 {
+		return products, nil
+	}
+
+	results := make([]model.Product, 0, len(products))
+	for _, p := range products {
+		if psc.Search_name != "" && !containsIgnoreCase(p.Name, psc.Search_name) {
+			continue
+		}
+		if psc.Supplier_id != 0 && p.Supplier_id != psc.Supplier_id {
+			continue
+		}
+		if psc.Min_price != 0 && p.Price < psc.Min_price {
+			continue
+		}
+		if psc.Max_price != 0 && p.Price > psc.Max_price {
+			continue
+		}
+		results = append(results, p)
+	}
+
+	if len(results) == 0 {
+		return nil, errors.New("no products found")
+	}
+
+	return results, nil
+}

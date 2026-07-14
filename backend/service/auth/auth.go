@@ -8,6 +8,7 @@ import (
 	"github.com/P-SEN371-Group-3/educartion/service/db"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -87,20 +88,22 @@ func getAccountIdFromJWT(tokenString string) (model.Account, error) {
 func Register(rr model.RegisterRequest) error {
 	hashedPassword, err := hashPassword(rr.Password_text)
 	if err != nil {
-		return errors.New("Failed to hash password: " + err.Error())
+		return ErrHashPassword
 	}
 
 	newAccount := model.Account{
-		Full_name:     rr.Full_name,
-		Email:         rr.Email,
-		Password_hash: hashedPassword,
-		Role:          "customer",
-		Created_at:    time.Now(),
+		Full_name:      rr.Full_name,
+		Email:          rr.Email,
+		Password_hash:  hashedPassword,
+		Role:           "customer",
+		Login_attempts: 0,
+		Is_active:      true,
+		Created_at:     time.Now(),
 	}
 
 	_, err = db.InsertAccount(newAccount)
 	if err != nil {
-		return errors.New("Failed to Insert Account: " + err.Error())
+		return ErrDBInsert
 	}
 
 	return nil
@@ -117,18 +120,22 @@ func LoginWithEmail(lr model.LoginWithEmailRequest) (string, model.Account, erro
 
 	acc, err := db.GetAccountByEmail(lr.Email)
 	if err != nil {
-		return "", model.Account{}, errors.New("Failed to get user by email")
+		if errors.Is(err, pgx.ErrNoRows) {
+			return "", model.Account{}, ErrAccountNotFound
+		}
+
+		return "", model.Account{}, ErrUnkown
 	}
 
 	// If account is inactive then need to reset account (forget password)
 	if !acc.Is_active {
-		return "", model.Account{}, errors.New("Account inactive")
+		return "", model.Account{}, ErrAccountInactive
 	}
 
 	ok := checkPassword(lr.Password_text, acc.Password_hash)
 	if !ok {
 		db.IncLoginAttempts(acc.Account_id)
-		return "", model.Account{}, errors.New("Password incorrect")
+		return "", model.Account{}, ErrPasswordIncorrect
 	}
 
 	tokenString, err := createJWT()
@@ -140,9 +147,28 @@ func LoginWithEmail(lr model.LoginWithEmailRequest) (string, model.Account, erro
 		}
 		accLogin, err := db.InsertAccountLogin(accLogin)
 		if err != nil {
-			return "", acc, nil // Failed to make a JWT, but still managed to login. User can continue.
+			return "", acc, ErrFailedToCreateJWT // Failed to make a JWT, but still managed to login. User can continue.
 		}
 	}
 
 	return tokenString, acc, nil
+}
+
+func Logout(lr model.LogoutRequest) error {
+
+	rowcount, err := db.DeleteAccountLoginByToken(lr.Token)
+	if err != nil {
+		return ErrUnkown
+	}
+
+	if rowcount == 0 {
+		return ErrAccountLoginNotFound
+	}
+
+	if rowcount != 1 {
+		return ErrUnkown
+	}
+
+	return nil
+
 }

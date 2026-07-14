@@ -27,6 +27,7 @@ type postgresConfig struct {
 	Host     string
 	Port     string
 	Database string
+	SSLMode  string
 }
 
 type dbConnection struct {
@@ -59,10 +60,11 @@ func loadConfig() *Config {
 		},
 		DB: postgresConfig{
 			Username: os.Getenv("POSTGRES_USER"),
-			Password: os.Getenv("POSTGRES_PWD"),
+			Password: os.Getenv("POSTGRES_PASSWORD"),
 			Host:     os.Getenv("POSTGRES_HOST"),
 			Port:     os.Getenv("POSTGRES_PORT"),
-			Database: os.Getenv("POSTGRES_DATABASE"),
+			Database: os.Getenv("POSTGRES_DB"),
+			SSLMode:  os.Getenv("POSTGRES_SSLMODE"),
 		},
 	}
 

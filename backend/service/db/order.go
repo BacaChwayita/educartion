@@ -123,6 +123,69 @@ func GetOrderById(order_id int) (model.Orders, error) {
 	return o, nil
 }
 
+func GetAllOrders() ([]model.Orders, error) {
+	cfg := config.GetConfig()
+
+	sql := `
+	SELECT ` + orderColumns + `
+	FROM orders
+	ORDER BY placed_at DESC, order_id DESC
+	`
+
+	rows, err := cfg.DBConnection.Pool.Query(
+		cfg.DBConnection.Ctx,
+		sql,
+	)
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db select",
+			slog.String("error", err.Error()),
+			slog.String("func", "GetAllOrders"),
+			slog.String("timestamp", time.Now().GoString()),
+		)
+		return nil, fmt.Errorf("Error on db select: %w", err)
+	}
+	defer rows.Close()
+
+	orders := make([]model.Orders, 0)
+	for rows.Next() {
+		var o model.Orders
+		err := rows.Scan(
+			&o.Order_id,
+			&o.Account_id,
+			&o.Order_number,
+			&o.Status,
+			&o.Subtotal_amount,
+			&o.Discount_amount,
+			&o.Total_amount,
+			&o.Placed_at,
+		)
+		if err != nil {
+			cfg.Logs.Logger.Info(
+				"Error on db select",
+				slog.String("error", err.Error()),
+				slog.String("func", "GetAllOrders"),
+				slog.String("timestamp", time.Now().GoString()),
+			)
+			return nil, fmt.Errorf("Error on db select: %w", err)
+		}
+
+		orders = append(orders, o)
+	}
+
+	if err = rows.Err(); err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db select",
+			slog.String("error", err.Error()),
+			slog.String("func", "GetAllOrders"),
+			slog.String("timestamp", time.Now().GoString()),
+		)
+		return nil, fmt.Errorf("Error on db select: %w", err)
+	}
+
+	return orders, nil
+}
+
 func UpdateOrder(o model.Orders) (int64, error) {
 	cfg := config.GetConfig()
 

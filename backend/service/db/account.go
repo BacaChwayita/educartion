@@ -204,9 +204,9 @@ func GetAccountByJTI(token_string string) (model.Account, error) {
 		a.role,
 		a.login_attempts,
 		a.is_active,
-		a.created_at,
+		a.created_at
 	FROM ACCOUNT a
-	INNER JOIN AccountLogins al
+	INNER JOIN AccountLogin al
 	  ON al.account_id = a.account_id
 	WHERE al.token_string = $1
 	`
@@ -350,4 +350,58 @@ func InsertAccountLogin(al model.AccountLogin) (model.AccountLogin, error) {
 
 	cfg.Logs.Logger.Info(fmt.Sprintf("Created Account Login with ID: %d\n", al.Account_id))
 	return al, nil
+}
+
+func DeleteAccountLoginById(token_id int) (int64, error) {
+	cfg := config.GetConfig()
+
+	sql := `
+	DELETE FROM ACCOUNTLOGIN
+	WHERE token_id = $1
+	`
+
+	result, err := cfg.DBConnection.Pool.Exec(
+		cfg.DBConnection.Ctx,
+		sql,
+		token_id,
+	)
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db update",
+			slog.String("error", err.Error()),
+			slog.String("func", "DeleteAccountLoginById"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.Int("token_id", token_id),
+		)
+		return -1, fmt.Errorf("Error on db update: %w", err)
+	}
+
+	return result.RowsAffected(), nil
+}
+
+func DeleteAccountLoginByToken(token string) (int64, error) {
+	cfg := config.GetConfig()
+
+	sql := `
+	DELETE FROM ACCOUNTLOGIN
+	WHERE token_string = $1
+	`
+
+	result, err := cfg.DBConnection.Pool.Exec(
+		cfg.DBConnection.Ctx,
+		sql,
+		token,
+	)
+	if err != nil {
+		cfg.Logs.Logger.Info(
+			"Error on db update",
+			slog.String("error", err.Error()),
+			slog.String("func", "DeleteAccountLoginById"),
+			slog.String("timestamp", time.Now().GoString()),
+			slog.String("token", token),
+		)
+		return -1, fmt.Errorf("Error on db update: %w", err)
+	}
+
+	return result.RowsAffected(), nil
 }
