@@ -13,17 +13,18 @@ import (
 
 // When a user clicks on catalog but have not searched.
 func HandleGetProducts(w http.ResponseWriter, req *http.Request) {
-
 	var pr model.ProductRequest
-	err := json.NewDecoder(req.Body).Decode(&pr)
-	if err != nil {
-		rpc.WriteError(
-			w,
-			http.StatusBadRequest,
-			rpc.ErrDecodeHTTPRequestBody,
-		)
-		return
 
+	if req.Body != nil {
+		err := json.NewDecoder(req.Body).Decode(&pr)
+		if err != nil && err.Error() != "EOF" {
+			rpc.WriteError(
+				w,
+				http.StatusBadRequest,
+				rpc.ErrDecodeHTTPRequestBody,
+			)
+			return
+		}
 	}
 
 	products, err := db.GetAllProducts()

@@ -1,5 +1,6 @@
 "use client";
-import React, { useRef } from "react";
+
+import { useRef } from "react";
 
 type Category = {
   id: string | number;
@@ -12,7 +13,7 @@ export default function Categories({ categories, onSelect }: { categories: Categ
 
   const scroll = (direction: "left" | "right") => {
     if (scrollRef.current) {
-      const scrollAmount = 400;
+      const scrollAmount = 340;
       scrollRef.current.scrollBy({
         left: direction === "left" ? -scrollAmount : scrollAmount,
         behavior: "smooth",
@@ -21,76 +22,48 @@ export default function Categories({ categories, onSelect }: { categories: Categ
   };
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+    <div className="flex items-center gap-3 overflow-hidden">
       <button
+        type="button"
         onClick={() => scroll("left")}
-        style={{
-          flex: "0 0 40px",
-          height: 40,
-          background: "#f0f0f0",
-          border: "1px solid #ddd",
-          borderRadius: 6,
-          cursor: "pointer",
-          fontSize: 18,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/80 bg-white/90 text-lg font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+        aria-label="Scroll categories left"
       >
         ‹
       </button>
 
       <div
         ref={scrollRef}
-        style={{
-          display: "flex",
-          gap: 12,
-          overflowX: "auto",
-          scrollBehavior: "smooth",
-          flex: 1,
-          maxWidth: "calc(100% - 100px)",
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
+        className="flex w-full gap-4 overflow-x-auto pb-1 scroll-smooth scrollbar-none"
       >
-        <style>{`div::-webkit-scrollbar { display: none; }`}</style>
-        {categories.map((c) => (
+        {categories.map((category) => (
           <button
-            key={c.id}
-            onClick={() => onSelect && onSelect(c.id)}
-            style={{
-              flex: "0 0 160px",
-              minWidth: 160,
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              padding: 12,
-              borderRadius: 8,
-              border: "1px solid #eee",
-              background: "white",
-              cursor: "pointer",
-            }}
+            key={category.id}
+            type="button"
+            onClick={() => onSelect?.(category.id)}
+            className="group flex min-w-[180px] flex-col overflow-hidden rounded-[1.5rem] border border-slate-200/80 bg-white/90 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-white/10 dark:bg-white/5 dark:shadow-black/10"
           >
-            {c.image ? <img src={c.image} alt={c.name} style={{ width: 80, height: 80, objectFit: "cover", borderRadius: 8 }} /> : <div style={{ width: 80, height: 80, background: "#f3f3f3", borderRadius: 8 }} />}
-            <div style={{ marginTop: 8, fontWeight: 600, fontSize: 14 }}>{c.name}</div>
+            <div className="relative h-32 overflow-hidden bg-slate-100 dark:bg-slate-900">
+              {category.image ? (
+                <img src={category.image} alt={category.name} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              ) : (
+                <div className="h-full w-full bg-slate-200 dark:bg-slate-800" />
+              )}
+            </div>
+            <div className="px-4 py-3 text-left">
+              <p className="text-sm font-semibold text-slate-900 transition group-hover:text-amber-700 dark:text-slate-100 dark:group-hover:text-amber-300">
+                {category.name}
+              </p>
+            </div>
           </button>
         ))}
       </div>
 
       <button
+        type="button"
         onClick={() => scroll("right")}
-        style={{
-          flex: "0 0 40px",
-          height: 40,
-          background: "#f0f0f0",
-          border: "1px solid #ddd",
-          borderRadius: 6,
-          cursor: "pointer",
-          fontSize: 18,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
+        className="flex h-11 w-11 items-center justify-center rounded-full border border-slate-200/80 bg-white/90 text-lg font-semibold text-slate-900 shadow-sm transition hover:bg-slate-100 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+        aria-label="Scroll categories right"
       >
         ›
       </button>

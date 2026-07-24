@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
+import ThemeToggle from "@/components/theme-toggle";
+
 type CartItem = { id: string | number; title: string; price: number; image?: string; description?: string; qty: number };
 
 const DELIVERY_FEE = 5.0;
@@ -54,18 +56,34 @@ export default function PaymentPage() {
   };
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.2),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.18),transparent_28%),linear-gradient(180deg,#060816_0%,#0b1020_100%)] px-6 py-10 text-slate-100 sm:px-8 lg:px-10">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[28px_28px] opacity-20" />
+    <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,var(--hero-accent),transparent_30%),radial-gradient(circle_at_bottom_right,var(--hero-accent-2),transparent_28%),linear-gradient(180deg,var(--hero-bg-top)_0%,var(--hero-bg-bottom)_100%)] px-6 py-10 text-slate-100 sm:px-8 lg:px-10">
+      <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-size-[28px_28px] opacity-20" />
       <div className="relative mx-auto w-full max-w-4xl">
         <div className="w-full rounded-4xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl lg:p-8">
           <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-6 sm:p-8">
-            <div className="mb-8 space-y-2">
-              <p className="text-sm font-medium uppercase tracking-[0.3em] text-amber-200">
-                Payment
-              </p>
-              <h2 className="text-3xl font-semibold tracking-tight text-white">Checkout</h2>
-              <p className="text-sm leading-6 text-slate-300">Complete your order with delivery and payment details.</p>
-            </div>
+            <header className="mb-8 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/5 p-4 sm:p-5">
+              <div className="space-y-2">
+                <p className="text-sm font-medium uppercase tracking-[0.3em] text-amber-200">
+                  Payment
+                </p>
+                <h2 className="text-3xl font-semibold tracking-tight text-white">Checkout</h2>
+                <p className="text-sm leading-6 text-slate-300">Complete your order with delivery and payment details.</p>
+              </div>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/cart"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-white/10"
+                >
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <circle cx="9" cy="20" r="1.5" />
+                    <circle cx="17" cy="20" r="1.5" />
+                    <path d="M3 4h2l2.4 10.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L21 7H7" />
+                  </svg>
+                  <span>Cart</span>
+                </Link>
+                <ThemeToggle />
+              </div>
+            </header>
 
             <div className="grid gap-6 lg:grid-cols-3">
               <div className="lg:col-span-2 space-y-6">

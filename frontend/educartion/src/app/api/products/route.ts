@@ -6,11 +6,10 @@ import type { Product } from "@/lib/product-contract";
 
 export async function GET() {
   const backendResponse = await fetch(getBackendAuthUrl("/api/products"), {
-    method: "POST",
+    method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({}),
     cache: "no-store",
   });
 

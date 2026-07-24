@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
+import ThemeToggle from "@/components/theme-toggle";
 import { handleLoadProducts } from "@/controllers/productController";
 import type { CartItem } from "@/lib/cart-contract";
 import type { Product } from "@/lib/product-contract";
@@ -132,10 +133,12 @@ export default function ProductDetailsPage() {
   const params = useParams<{ id: string | string[] }>();
   const routeId = Array.isArray(params.id) ? params.id[0] : params.id;
   const [product, setProduct] = useState<Product | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     let isMounted = true;
@@ -235,39 +238,110 @@ export default function ProductDetailsPage() {
     setSuccessMessage(`${quantity} item(s) added to cart.`);
   };
 
+  const filteredProducts = useMemo(() => {
+    const query = search.trim().toLowerCase();
+
+    if (!query) {
+      return products;
+    }
+
+    return products.filter((product) => {
+      const name = typeof product.name === "string" ? product.name.toLowerCase() : "";
+      const description = typeof product.description === "string" ? product.description.toLowerCase() : "";
+      const rawId = product.id ?? product["product_id"];
+      const idText =
+        typeof rawId === "string" || typeof rawId === "number" ? String(rawId).toLowerCase() : "";
+
+      return name.includes(query) || description.includes(query) || idText.includes(query);
+    });
+  }, [products, search]);
+
   return (
-    <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,rgba(251,191,36,0.2),transparent_30%),radial-gradient(circle_at_bottom_right,rgba(14,165,233,0.18),transparent_28%),linear-gradient(180deg,#060816_0%,#0b1020_100%)] px-6 py-10 text-slate-100 sm:px-8 lg:px-10">
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[28px_28px] opacity-20" />
+    <section className="relative min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,var(--hero-accent),transparent_30%),radial-gradient(circle_at_bottom_right,var(--hero-accent-2),transparent_28%),linear-gradient(180deg,var(--hero-bg-top)_0%,var(--hero-bg-bottom)_100%)] px-6 py-10 text-slate-900 sm:px-8 lg:px-10 dark:text-slate-100">
+      <div className="absolute inset-0 bg-[linear-gradient(var(--grid-line)_1px,transparent_1px),linear-gradient(90deg,var(--grid-line)_1px,transparent_1px)] bg-size-[28px_28px] opacity-20" />
       <div className="relative mx-auto w-full max-w-[1400px]">
-        <div className="rounded-4xl border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/30 backdrop-blur-xl lg:p-8">
-          <div className="rounded-3xl border border-white/10 bg-slate-950/80 p-6 sm:p-8">
+        <header className="rounded-4xl border border-slate-200/80 bg-white/90 p-6 shadow-[0_20px_60px_-24px_var(--shadow-color)] backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:shadow-2xl dark:shadow-black/30">
+          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:gap-6">
+            <div className="flex min-w-[170px] items-center justify-start">
+              <div className="inline-flex h-11 w-40 items-center justify-center rounded-xl border border-slate-300/80 bg-white/90 text-sm font-semibold uppercase tracking-[0.2em] text-slate-900 shadow-sm dark:border-white/15 dark:bg-slate-950/80 dark:text-amber-100">
+                Logo
+              </div>
+            </div>
+
+            <div className="flex flex-1 justify-center">
+              <label className="relative w-full max-w-2xl">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search products"
+                  className="w-full rounded-2xl border border-slate-300/80 bg-white/90 py-3 pl-4 pr-12 text-sm text-slate-900 outline-none transition placeholder:text-slate-500 focus:border-amber-500/60 focus:bg-white focus:ring-2 focus:ring-amber-500/20 dark:border-white/10 dark:bg-white/5 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-amber-300/60 dark:focus:bg-white/8 dark:focus:ring-amber-300/20"
+                />
+                <span className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500 dark:text-slate-400">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" />
+                    <path d="M20 20L16.65 16.65" />
+                  </svg>
+                </span>
+              </label>
+            </div>
+
+            <div className="flex min-w-[170px] items-center justify-end gap-2 md:gap-3">
+              <Link
+                href="/orders"
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-300/80 bg-white/90 px-3 py-2 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+              >
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <circle cx="12" cy="8" r="4" />
+                  <path d="M4 20a8 8 0 0 1 16 0" />
+                </svg>
+                <span>Account</span>
+              </Link>
+              <Link
+                href="/cart"
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-300/80 bg-white/90 px-3 py-2 text-sm font-medium text-slate-800 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+              >
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                  <circle cx="9" cy="20" r="1.5" />
+                  <circle cx="17" cy="20" r="1.5" />
+                  <path d="M3 4h2l2.4 10.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.8L21 7H7" />
+                </svg>
+                <span>Cart</span>
+              </Link>
+              <ThemeToggle />
+            </div>
+          </div>
+        </header>
+        <br></br>
+        <div className="rounded-4xl border border-slate-200/80 bg-white/90 p-6 shadow-[0_20px_60px_-24px_var(--shadow-color)] backdrop-blur-xl dark:border-white/10 dark:bg-white/5 dark:shadow-2xl dark:shadow-black/30 lg:p-8">
+          <div className="rounded-3xl border border-slate-200/80 bg-slate-50/95 p-6 sm:p-8 dark:border-white/10 dark:bg-slate-950/80">
             <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="space-y-2">
-                <p className="text-sm font-medium uppercase tracking-[0.3em] text-amber-200">Product</p>
-                <h1 className="text-3xl font-semibold tracking-tight text-white">
+                <p className="text-sm font-medium uppercase tracking-[0.3em] text-amber-700 dark:text-amber-200">Product</p>
+                <h1 className="text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
                   {product?.name ?? "Product details"}
                 </h1>
-                <p className="text-sm leading-6 text-slate-300">
+                <p className="text-sm leading-6 text-slate-600 dark:text-slate-300">
                   Review the details before adding this item to your cart.
                 </p>
               </div>
               <Link
                 href="/products"
-                className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition hover:bg-white/10"
+                className="inline-flex items-center gap-2 rounded-2xl border border-slate-300/80 bg-white/90 px-4 py-2 text-sm font-semibold text-slate-800 shadow-sm transition hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
               >
                 <span>Back to products</span>
               </Link>
             </div>
 
             {error ? (
-              <div className="mb-6 rounded-2xl border border-rose-400/30 bg-rose-400/10 px-4 py-3 text-sm text-rose-100">
+              <div className="mb-6 rounded-2xl border border-rose-400/30 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:bg-rose-400/10 dark:text-rose-100">
                 {error}
               </div>
             ) : null}
 
             {isLoading ? (
               <div className="grid gap-6 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
-                <div className="h-[420px] rounded-3xl border border-white/10 bg-white/5 animate-pulse" />
+                <div className="h-[420px] rounded-3xl border border-slate-200/80 bg-slate-100/80 animate-pulse dark:border-white/10 dark:bg-white/5" />
                 <div className="space-y-4">
                   <div className="h-7 w-3/5 animate-pulse rounded bg-white/10" />
                   <div className="h-4 w-full animate-pulse rounded bg-white/5" />
@@ -278,52 +352,52 @@ export default function ProductDetailsPage() {
             ) : product ? (
               <div className="grid gap-8 lg:grid-cols-[minmax(0,380px)_minmax(0,1fr)]">
                 <div className="space-y-4">
-                  <div className="overflow-hidden rounded-3xl border border-white/10 bg-slate-900/60">
+                  <div className="overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-100/80 dark:border-white/10 dark:bg-slate-900/60">
                     <div className="relative aspect-[4/5] w-full">
                       <img src={imageUrl} alt={product.name ?? "Product image"} className="h-full w-full object-cover" />
                     </div>
                   </div>
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-slate-300">
-                    <span className="text-slate-400">Supplier</span>
-                    <p className="mt-1 text-base font-semibold text-white">{supplierLabel}</p>
+                  <div className="rounded-2xl border border-slate-200/80 bg-white/95 px-4 py-3 text-sm text-slate-700 shadow-sm dark:border-white/10 dark:bg-white/5 dark:text-slate-300">
+                    <span className="text-slate-500 dark:text-slate-400">Supplier</span>
+                    <p className="mt-1 text-base font-semibold text-slate-900 dark:text-white">{supplierLabel}</p>
                   </div>
                 </div>
 
                 <div className="space-y-6">
                   <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-400">Price</p>
-                    <p className="mt-2 text-3xl font-semibold text-amber-300">
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Price</p>
+                    <p className="mt-2 text-3xl font-semibold text-amber-700 dark:text-amber-300">
                       {typeof product.price === "number" ? formatCurrency(product.price) : "$0.00"}
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                    <p className="text-sm font-semibold text-white">Availability</p>
+                  <div className="rounded-2xl border border-slate-200/80 bg-white/95 px-4 py-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">Availability</p>
                     <div className="mt-2 flex flex-wrap items-center gap-2">
-                      <span className={isInStock ? "text-emerald-300 font-semibold" : "text-rose-300 font-semibold"}>
+                      <span className={isInStock ? "text-emerald-600 font-semibold dark:text-emerald-300" : "text-rose-600 font-semibold dark:text-rose-300"}>
                         {isInStock ? "In stock" : "Out of stock"}
                       </span>
-                      <span className="text-sm text-slate-300">
+                      <span className="text-sm text-slate-600 dark:text-slate-300">
                         {normalizedStock} available
                       </span>
                     </div>
                   </div>
 
                   <div>
-                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-400">Description</p>
-                    <p className="mt-2 text-sm leading-6 text-slate-300">
+                    <p className="text-sm font-medium uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Description</p>
+                    <p className="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">
                       {product.description ?? "No description available for this product."}
                     </p>
                   </div>
 
-                  <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4">
-                    <p className="text-sm font-semibold text-white mb-3">Quantity</p>
+                  <div className="rounded-2xl border border-slate-200/80 bg-white/95 px-4 py-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+                    <p className="text-sm font-semibold text-slate-900 mb-3 dark:text-white">Quantity</p>
                     <div className="flex flex-wrap items-center gap-4">
-                      <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-slate-900/50 px-3 py-2">
+                      <div className="flex items-center gap-2 rounded-2xl border border-slate-200/80 bg-slate-100/80 px-3 py-2 dark:border-white/10 dark:bg-slate-900/50">
                         <button
                           type="button"
                           onClick={() => updateQuantity(quantity - 1)}
-                          className="h-8 w-8 rounded-lg text-slate-200 transition hover:bg-white/10"
+                          className="h-8 w-8 rounded-lg text-slate-700 transition hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-white/10"
                           aria-label="Decrease quantity"
                         >
                           −
@@ -334,12 +408,12 @@ export default function ProductDetailsPage() {
                           max={Math.max(1, maxQuantity)}
                           value={quantity}
                           onChange={(event) => updateQuantity(Number(event.target.value))}
-                          className="h-8 w-16 rounded-lg border border-white/10 bg-slate-950/80 text-center text-sm text-white outline-none focus:border-amber-300/60 focus:ring-2 focus:ring-amber-300/20"
+                          className="h-8 w-16 rounded-lg border border-slate-300/80 bg-white text-center text-sm text-slate-900 outline-none focus:border-amber-500/60 focus:ring-2 focus:ring-amber-500/20 dark:border-white/10 dark:bg-slate-950/80 dark:text-white dark:focus:border-amber-300/60 dark:focus:ring-amber-300/20"
                         />
                         <button
                           type="button"
                           onClick={() => updateQuantity(quantity + 1)}
-                          className="h-8 w-8 rounded-lg text-slate-200 transition hover:bg-white/10"
+                          className="h-8 w-8 rounded-lg text-slate-700 transition hover:bg-slate-200 dark:text-slate-200 dark:hover:bg-white/10"
                           aria-label="Increase quantity"
                         >
                           +
@@ -361,7 +435,7 @@ export default function ProductDetailsPage() {
                     {successMessage && (
                       <div>
                         <br />
-                        <div className="mb-4 rounded-2xl border border-emerald-400/30 bg-emerald-400/10 px-4 py-3 text-sm text-emerald-100">
+                        <div className="mb-4 rounded-2xl border border-emerald-400/30 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-100">
                           {successMessage}
                         </div>
                       </div>

@@ -9,7 +9,7 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-RUN pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile 
 
 # -------------------------
 # Stage 2 - Build application
@@ -32,19 +32,17 @@ RUN pnpm build
 # -------------------------
 FROM node:22-alpine AS runner
 
+RUN corepack enable pnpm
+
 WORKDIR /app
 
 ENV NODE_ENV=production
 
-# Copy the standalone server
-COPY --from=builder /app/.next/standalone ./
-
-# Copy static assets
-COPY --from=builder /app/.next/static ./.next/static
-
-# Copy public folder (if it exists)
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
 COPY --from=builder /app/public ./public
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+CMD ["pnpm", "start"]
